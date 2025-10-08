@@ -1,0 +1,20 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:RetailManagementSystem.WPF.ViewModels"
+                    xmlns:view="clr-namespace:RetailManagementSystem.WPF.Views">
+
+    <DataTemplate DataType="{x:Type vm:HomeVM}">
+        <view:Home/>
+    </DataTemplate>
+
+
+    <DataTemplate DataType="{x:Type vm:CustomerVM}">
+        <view:Customers/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:ProductVM}">
+        <view:Products/>
+    </DataTemplate>
+
+
+</ResourceDictionary>
