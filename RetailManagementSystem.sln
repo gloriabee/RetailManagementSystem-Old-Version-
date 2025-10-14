@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36414.22 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailManagementSystem.WPF", "RetailManagementSystem.WPF\RetailManagementSystem.WPF.csproj", "{6228A10E-6514-45F7-BD90-ACB688A43C43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailManagementSystem", "RetailManagementSystem\RetailManagementSystem.csproj", "{7AA8E800-E0B2-48AC-9AF4-D5B8944CB194}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6228A10E-6514-45F7-BD90-ACB688A43C43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6228A10E-6514-45F7-BD90-ACB688A43C43}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6228A10E-6514-45F7-BD90-ACB688A43C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6228A10E-6514-45F7-BD90-ACB688A43C43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AA8E800-E0B2-48AC-9AF4-D5B8944CB194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AA8E800-E0B2-48AC-9AF4-D5B8944CB194}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AA8E800-E0B2-48AC-9AF4-D5B8944CB194}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AA8E800-E0B2-48AC-9AF4-D5B8944CB194}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C21BF000-4591-4B52-83AC-43569180824E}
+		SolutionGuid = {2F57E9BE-EB75-47FF-86E0-4CB1C79E873D}
 	EndGlobalSection
 EndGlobal
