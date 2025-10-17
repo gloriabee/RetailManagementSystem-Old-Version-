@@ -24,5 +24,7 @@ namespace RetailManagementSystem.Views
         {
             InitializeComponent();
         }
+
+      
     }
 }
