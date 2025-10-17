@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RetailManagementSystem.Models;
 
-public partial class Customer
+public partial class Customer : INotifyPropertyChanged
 {
     public int Id { get; set; }
 
@@ -17,15 +19,35 @@ public partial class Customer
 
     public string Country { get; set; } = null!;
 
-    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? CreatedAt { get; set; } 
 
-    public DateTime? UpdatedAt { get; set; }= DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
 
     public DateTime? DeletedAt { get; set; }
 
-    public string? CreatedBy { get; set; } = "System";
+    public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }
 
     public string? DeletedBy { get; set; }
+
+    [NotMapped]
+    private bool _isSelected;
+    [NotMapped]
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected != value)
+            {
+                _isSelected = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+            }
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+
 }

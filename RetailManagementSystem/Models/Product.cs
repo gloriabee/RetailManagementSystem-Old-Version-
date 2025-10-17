@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RetailManagementSystem.Models;
 
-public partial class Product
+public partial class Product : INotifyPropertyChanged
 {
     public int Id { get; set; }
 
@@ -26,4 +28,22 @@ public partial class Product
     public string? UpdatedBy { get; set; }
 
     public string? DeletedBy { get; set; }
+
+    [NotMapped]
+    private bool _isSelected;
+    [NotMapped]
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected != value)
+            {
+                _isSelected = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+            }
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 }

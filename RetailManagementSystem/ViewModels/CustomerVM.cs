@@ -20,6 +20,8 @@ namespace RetailManagementSystem.ViewModels
         public string Address { get; set; }
         public string Country { get; set; }
 
+       
+
 
         public CustomerVM()
         {
@@ -31,11 +33,21 @@ namespace RetailManagementSystem.ViewModels
             LastPageCommand = new RelayCommand(_ => GoToLastPage(), _ => CurrentPage < TotalPages);
             NextPageCommand = new RelayCommand(_ => GoToNextPage(), _ => CurrentPage < TotalPages);
             PrevPageCommand = new RelayCommand(_ => GoToPrevPage(), _ => CurrentPage > 1);
+            ChangePageSizeCommand = new RelayCommand(param =>
+            {
+                if (int.TryParse(param?.ToString(), out int newSize))
+                {
+                    PageSize = newSize;
+                    CurrentPage = 1;
+                    LoadCustomers();
+                }
+            });
             RefreshCommand = new RelayCommand(_ => LoadCustomers());
             ShowWindowCommand = new RelayCommand(_ => ShowAddCustomerWindow());
             AddCustomerCommand = new RelayCommand(AddCustomer);
             UpdateCommand = new RelayCommand(UpdateCustomer);
             DeleteCommand = new RelayCommand(DeleteCustomer);
+            DeleteAllCommand = new RelayCommand(_ => DeleteSelectedCustomers());
             LoadCustomers();
         }
 
@@ -96,8 +108,26 @@ namespace RetailManagementSystem.ViewModels
             set
             {
                 _totalCount = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(TotalPages));
+            }
+        }
+
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set { _isSelected = value; OnPropertyChanged(nameof(IsSelected)); }
+        }
+
+        private bool _allSelected;
+        public bool AllSelected
+        {
+            get => _allSelected;
+            set
+            {
+                _allSelected = value;
+                OnPropertyChanged(nameof(AllSelected));
+                SelectAllRows(_allSelected);
             }
         }
 
@@ -110,6 +140,7 @@ namespace RetailManagementSystem.ViewModels
         public ICommand PrevPageCommand { get; }
         public ICommand LastPageCommand { get; }
 
+        public ICommand ChangePageSizeCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand ShowWindowCommand { get; }
 
@@ -117,6 +148,8 @@ namespace RetailManagementSystem.ViewModels
 
         public ICommand UpdateCommand { get; }
         public ICommand DeleteCommand { get; }
+
+        public ICommand DeleteAllCommand { get; }
 
         // Load data from CustomerService
         private void LoadCustomers()
@@ -212,7 +245,7 @@ namespace RetailManagementSystem.ViewModels
             {
                 MessageBox.Show("Failed to add customer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-           
+
         }
 
         private void UpdateCustomer(object parameter)
@@ -223,7 +256,7 @@ namespace RetailManagementSystem.ViewModels
             // Create an edit VM with existing values
             var editVM = new CustomerVM
             {
-                Id= customer.Id,
+                Id = customer.Id,
                 Username = customer.Username,
                 Email = customer.Email,
                 Phone = customer.Phone,
@@ -239,7 +272,7 @@ namespace RetailManagementSystem.ViewModels
 
             if (editWindow.ShowDialog() == true)
             {
-                customer.Id=editVM.Id;
+                customer.Id = editVM.Id;
                 customer.Username = editVM.Username;
                 customer.Email = editVM.Email;
                 customer.Phone = editVM.Phone;
@@ -248,11 +281,11 @@ namespace RetailManagementSystem.ViewModels
 
                 try
                 {
-                    
+
                     _customerService.Update(customer);
                     MessageBox.Show("Customer updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     LoadCustomers();
-                   
+
                 }
                 catch (Exception ex)
                 {
@@ -281,6 +314,42 @@ namespace RetailManagementSystem.ViewModels
                     }
                 }
             }
+        }
+
+
+        private void DeleteSelectedCustomers()
+        {
+            var selectedCustomers = MyCustomers.Where(c => c.IsSelected).ToList();
+            if (!selectedCustomers.Any())
+            {
+                MessageBox.Show("No customers selected.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            var result = MessageBox.Show($"Are you sure to delete {selectedCustomers.Count} selected customers?",
+                "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    foreach (var c in selectedCustomers)
+                    {
+                        _customerService.Delete(c.Id);
+
+                    }
+
+                    LoadCustomers();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error deleting customers: {ex.Message}");
+                }
+            }
+        }
+
+        public void SelectAllRows(bool select)
+        {
+            foreach (var c in MyCustomers)
+                c.IsSelected = select;
         }
     }
 }

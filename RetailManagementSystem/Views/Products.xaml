@@ -1,31 +1,31 @@
 ﻿<UserControl x:Class="RetailManagementSystem.Views.Products"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:RetailManagementSystem.ViewModels"
-             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             mc:Ignorable="d" 
-             d:DesignHeight="600"
-             d:DesignWidth="622"
-             >
+             xmlns:views="clr-namespace:RetailManagementSystem.Views"
+             mc:Ignorable="d"
+             Background="#212529">
+
+    <UserControl.DataContext>
+        <vm:ProductVM/>
+    </UserControl.DataContext>
+
     <Grid>
-        <!--<Border CornerRadius="0,20,20,0">
-            <Border.Background>
-                <ImageBrush ImageSource="/Images/product_page.png" 
-                            Stretch="None"/>
-            </Border.Background>
 
-        </Border>
-
-        <TextBlock Text="{Binding ProductAvailability}"
-                   Foreground="#F25E68"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center"
-                   Margin="276,300,0,0"/>-->
-
-        <ui:TitleBar Title="WPF UI"/>
-        
-
+        <views:GenericDataGrid
+            ItemsSource="{Binding MyProducts}"
+            ColumnsDefinition="{Binding ProductColumns}"
+            AddCommand="{Binding ShowWindowCommand}"
+            DeleteCommand="{Binding DeleteProductCommand}"
+            DeleteAllCommand="{Binding DeleteAllCommand}"
+            CurrentPage="{Binding CurrentPage}"
+            TotalPages="{Binding TotalPages}"
+            FirstPageCommand="{Binding FirstPageCommand}"
+            PrevPageCommand="{Binding PrevPageCommand}"
+            NextPageCommand="{Binding NextPageCommand}"
+            LastPageCommand="{Binding LastPageCommand}"/>
+       
     </Grid>
 </UserControl>
