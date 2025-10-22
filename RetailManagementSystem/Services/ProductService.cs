@@ -92,5 +92,10 @@ namespace RetailManagementSystem.Services
                 _context.SaveChanges();
             }
         }
+
+        public int GetProductsCount()
+        {
+            return _context.Products.Count();
+        }
     }
 }

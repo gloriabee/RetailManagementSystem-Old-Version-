@@ -25,15 +25,19 @@ namespace RetailManagementSystem.ViewModels
 
         public ICommand ProductsCommand { get; set; }
 
+        public ICommand OrdersCommand{get; set; }
+
         private void Home(object obj) => CurrentView = new HomeVM();
         private void Customer(object obj) => CurrentView = new CustomerVM();
         private void Product(object obj) => CurrentView = new ProductVM();
+        private void Order(object obj) => CurrentView = new OrderVM();
 
         public NavigationVM()
         {
             HomeCommand = new RelayCommand(Home);
             CustomersCommand = new RelayCommand(Customer);
             ProductsCommand = new RelayCommand(Product);
+            OrdersCommand = new RelayCommand(Order);
 
 
             // Startup Page

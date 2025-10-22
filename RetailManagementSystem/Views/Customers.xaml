@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800"
-             Background="#212529">
+             >
 
     <UserControl.DataContext>
         <vm:CustomerVM/>
@@ -63,7 +63,7 @@
         </DockPanel>
 
         <!-- 🔹 DataGrid Section -->
-        <Border Grid.Row="1" Margin="10,0,10,0" Background="#212529">
+        <Border Grid.Row="1" Margin="10,0,10,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                 HorizontalScrollBarVisibility="Auto">
                 <DataGrid ItemsSource="{Binding MyCustomers}"
@@ -72,8 +72,8 @@
                           IsReadOnly="False"
                           HeadersVisibility="All"
                           RowHeight="45"
-                          Background="#212529"
-                          Foreground="White"
+                          Background="Transparent"
+                          Foreground="#212529"
                           BorderThickness="0"
                           HorizontalScrollBarVisibility="Auto"
                           >

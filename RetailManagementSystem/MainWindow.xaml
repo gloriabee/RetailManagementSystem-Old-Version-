@@ -7,9 +7,8 @@
         xmlns:Menu="clr-namespace:RetailManagementSystem.Utils"
         mc:Ignorable="d"
         Title="Retail Management Syste" Height="600" Width="850"
-        
+        Style="{StaticResource MaterialDesignWindow}"
         WindowStartupLocation="CenterScreen"
-       
         Background="Transparent">
 
     <Window.DataContext>
@@ -29,13 +28,13 @@
 
             <!-- Navigation Panel -->
             <Grid Grid.Column="0">
-                <Border Background="#272B2F" CornerRadius="20,0,0,20"/>
+                <Border Background="#131B2F" CornerRadius="20,0,0,20"/>
 
                 <StackPanel Height="400" Width="228" Margin="0,50,0,0">
 
                     <!-- Home -->
                     <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding HomeCommand}" IsChecked="True">
-                        <Grid>
+                        <Grid Height="50" VerticalAlignment="Bottom">
                             <Image Source="/Images/img_home.png" Style="{StaticResource Image_Style}"/>
                             <TextBlock Text="Home" Style="{StaticResource Text_Style}"/>
                         </Grid>
@@ -56,15 +55,22 @@
                             <TextBlock Text="Products" Style="{StaticResource Text_Style}"/>
                         </Grid>
                     </Menu:Btn>
+                    
+                    <!-- Orders -->
+                    <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding OrdersCommand}">
+                        <Grid>
+                            <Image Source="/Images/img_order.png" Style="{StaticResource Image_Style}"/>
+                            <TextBlock Text="Orders" Style="{StaticResource Text_Style}"/>
+                        </Grid>
+                    </Menu:Btn>
 
                 </StackPanel>
             </Grid>
 
             <!-- Content Area -->
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Background="White">
                 <ContentControl 
-                    x:Name="Pages" 
-                    Content="{Binding CurrentView}"
+                  Content="{Binding CurrentView}"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Margin="0"/>

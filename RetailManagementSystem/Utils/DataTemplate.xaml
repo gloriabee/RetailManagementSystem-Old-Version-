@@ -16,5 +16,8 @@
         <view:Products/>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:OrderVM}">
+        <view:Orders/>
+    </DataTemplate>
 
 </ResourceDictionary>

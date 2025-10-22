@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="RetailManagementSystem.Components.StatsCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="root"
+             Width="200" Height="120">
+    <Border
+        Background="White"
+        CornerRadius="10"
+        BorderBrush="LightGray"
+        BorderThickness="1"
+        Padding="10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+
+            <Image 
+                Grid.Column="1" 
+                Source="{Binding Icon, ElementName=root}"
+                Width="30" Height="30" 
+                VerticalAlignment="Center"/>
+
+            <StackPanel  Margin="10,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Title, ElementName=root}" FontWeight="Bold" FontSize="12" Foreground="Gray"/>
+                <TextBlock Text="{Binding Value, ElementName=root}" FontWeight="Bold" FontSize="24" Foreground="Black"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

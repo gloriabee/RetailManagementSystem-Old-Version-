@@ -101,5 +101,12 @@ namespace RetailManagementSystem.Services
             }
 
         }
+
+        // Get total customer count
+        public int GetCustomersCount()
+        {
+            return _context.Customers.Count();
+        }
+
     }
 }
