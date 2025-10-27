@@ -129,6 +129,8 @@
                 Height="36"
                 Margin="0 10 0 0"
                 Content="Add Order"
+                Command="{Binding AddOrderCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                />
     </Grid>
 </Window>

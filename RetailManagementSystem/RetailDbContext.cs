@@ -28,7 +28,7 @@ public partial class RetailDbContext : DbContext
         {
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("E:\\Internship\\WPF\\RetailManagementSystem\\RetailManagementSystem\\appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("E:\\Internship\\WPF\\RetailManagementSystem\\RetailManagementSystem\\appsettings.Development.json", optional: false, reloadOnChange: true)
                 .Build();
 
             var connectionString = config.GetConnectionString("RetailDB");
