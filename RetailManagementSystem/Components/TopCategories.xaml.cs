@@ -1,4 +1,4 @@
-﻿using RetailManagementSystem.Services;
+﻿using RetailManagementSystem.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +17,14 @@ using System.Windows.Shapes;
 namespace RetailManagementSystem.Components
 {
     /// <summary>
-    /// Interaction logic for GridTable.xaml
+    /// Interaction logic for TopCategories.xaml
     /// </summary>
-    public partial class GridTable : UserControl
+    public partial class TopCategories : UserControl
     {
-        public GridTable()
+        public TopCategories()
         {
             InitializeComponent();
- 
+            
         }
-
-        
     }
 }

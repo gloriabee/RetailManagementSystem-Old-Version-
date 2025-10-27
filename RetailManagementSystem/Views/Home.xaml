@@ -22,7 +22,7 @@
             <components:StatsCard Title="Total&#x0a;Customers" Value="{Binding totalCustomers}" Icon="/Images/img_customer.png"/>
             <components:StatsCard Title="Total&#x0a;Products" Value="{Binding totalProducts}" Icon="/Images/img_product.png"/>
             <components:StatsCard Title="Total&#x0a;Orders" Value="753" Icon="/Images/img_order.png"/>
-            <components:StatsCard Title="Total&#x0a;Revenue" Value="753" Icon="/Images/img_order.png"/>
+            <components:StatsCard Title="Total&#x0a;Revenue" Value="753" Icon="/Images/img_transaction.png"/>
         </UniformGrid>
 
         <Grid Grid.Row="2" Margin="0,0,0,30">
@@ -34,21 +34,17 @@
             </Grid.ColumnDefinitions>
 
             <!-- Left panel -->
-            <Border Grid.Column="0" Background="White" CornerRadius="10" Margin="0,0,10,0" Padding="20">
-                <TextBlock Text="Top 5 categories by products" FontWeight="Bold"/>
-            </Border>
+            <components:TopCategories/>
 
             <!-- Right panel -->
-            <Border Grid.Column="1" Background="White" CornerRadius="10" Margin="10,0,0,0" Padding="20">
-                <TextBlock Text="Sales Trend" FontWeight="Bold"/>
-            </Border>
+            <components:TopCustomersCard Grid.Column="1"/>
         </Grid>
 
-        <Grid Grid.Row="3">
+        <!--<Grid Grid.Row="3">
             <Border Grid.Column="1" Background="White" CornerRadius="10" Margin="0,0,0,0" Padding="20">
                 <TextBlock Text="Sales Trend" FontWeight="Bold"/>
             </Border>
-        </Grid>
+        </Grid>-->
         
 
 

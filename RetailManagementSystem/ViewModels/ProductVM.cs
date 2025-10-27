@@ -1,13 +1,15 @@
-﻿using System;
+﻿using LiveChartsCore;
+
+using RetailManagementSystem.Models;
+using RetailManagementSystem.Services;
+using RetailManagementSystem.Views;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using RetailManagementSystem.Models;
-using RetailManagementSystem.Services;
-using RetailManagementSystem.Views;
 
 namespace RetailManagementSystem.ViewModels
 {
@@ -21,8 +23,8 @@ namespace RetailManagementSystem.ViewModels
         public string Category { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
+        public IEnumerable<ISeries> ChartSeries { get; set; }
 
-        
 
         public ProductVM()
         {
@@ -37,6 +39,8 @@ namespace RetailManagementSystem.ViewModels
 
             _productService = new ProductService();
             MyProducts = new ObservableCollection<Product>();
+
+        
 
             // Initialize commands
             FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => CurrentPage > 1);
@@ -331,5 +335,10 @@ namespace RetailManagementSystem.ViewModels
             foreach (var p in MyProducts)
                 p.IsSelected = select;
         }
+
+        
+
+
+            
     }
 }

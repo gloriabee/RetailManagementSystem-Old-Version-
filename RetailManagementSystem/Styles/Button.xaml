@@ -20,11 +20,10 @@
                     <Border x:Name="border"
                         Height="50"
                         Width="228"
-                        BorderThickness="0">
+                        BorderThickness="0" 
+                        Background="Transparent">
 
-                        <Border.Background>
-                            <SolidColorBrush x:Name="BorderBackground" Color="#242BEB"/>
-                        </Border.Background>
+                       
 
                         <Grid>
                             <Border x:Name="Indicator"
@@ -46,39 +45,12 @@
                             <Setter Property="Visibility" TargetName="Indicator" Value="Visible"/>
                         </Trigger>
 
-                        <EventTrigger RoutedEvent="Border.MouseEnter" SourceName="border">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetName="BorderBackground"
-                                                    Storyboard.TargetProperty="Color"
-                                                    From="#272B2F"
-                                                     To="#3E434A"
-                                                    Duration="0:0:0.3" />
-                                </Storyboard>
-                            </BeginStoryboard>
-
-
-                        </EventTrigger>
-
-                        <EventTrigger RoutedEvent="Border.MouseLeave"
-                                      SourceName="border">
-
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetName="BorderBackground"
-                                                    Storyboard.TargetProperty="Color"
-                                                    From="#3E434A"
-                                                    To="#272B2F"
-                                                    Duration="0:0:0.3" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-
+                         <!-- selected state -->
                         <Trigger Property="IsChecked"
                                  Value="True">
                             <Setter Property="Background"
                                     TargetName="border"
-                                    Value="#212529" />
+                                    Value="#242BEB" />
 
                             <Setter Property="Visibility"
                                     TargetName="Indicator"
@@ -91,43 +63,6 @@
         </Setter>
     </Style>
 
-    <ImageBrush x:Key="close_app_def" ImageSource="/Images/shutdown_def.png" Stretch="None"/>
-    <ImageBrush x:Key="close_app_mo" ImageSource="/Images/shutdown_mo.png" Stretch="None"/>
-
-    <Style x:Key="ExitApp" TargetType="{x:Type Button}">
-        <Setter Property="Height" Value="40"/>
-        <Setter Property="Width"
-                Value="40" />
-        <Setter Property="HorizontalAlignment"
-                Value="Right" />
-        <Setter Property="VerticalAlignment"
-                Value="Top" />
-        <Setter Property="Margin"
-                Value="0,15,15,0" />
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="border"
-                            BorderThickness="0"
-                            Background="{StaticResource close_app_def}">
-
-                    </Border>
-
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver"
-                                 Value="True">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource close_app_mo}"/>
-                        </Trigger>
-
-                        <Trigger Property="IsPressed"
-                        Value="True">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource close_app_mo}"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+   
 
 </ResourceDictionary>

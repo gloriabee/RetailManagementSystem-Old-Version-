@@ -1,5 +1,4 @@
-﻿using RetailManagementSystem.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,22 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace RetailManagementSystem.Components
 {
     /// <summary>
-    /// Interaction logic for GridTable.xaml
+    /// Interaction logic for AddOrder.xaml
     /// </summary>
-    public partial class GridTable : UserControl
+    public partial class AddOrder : Window
     {
-        public GridTable()
+        public AddOrder()
         {
             InitializeComponent();
- 
         }
-
-        
     }
 }

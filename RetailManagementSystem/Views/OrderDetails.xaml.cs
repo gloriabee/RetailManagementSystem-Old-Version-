@@ -1,5 +1,4 @@
-﻿using RetailManagementSystem.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,19 +13,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace RetailManagementSystem.Components
+namespace RetailManagementSystem.Views
 {
     /// <summary>
-    /// Interaction logic for GridTable.xaml
+    /// Interaction logic for OrderDetails.xaml
     /// </summary>
-    public partial class GridTable : UserControl
+    public partial class OrderDetails : UserControl
     {
-        public GridTable()
+        public OrderDetails()
         {
             InitializeComponent();
- 
         }
 
-        
+       
     }
 }

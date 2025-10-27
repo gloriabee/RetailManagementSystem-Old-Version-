@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:RetailManagementSystem.ViewModels"
         xmlns:Menu="clr-namespace:RetailManagementSystem.Utils"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="Retail Management Syste" Height="600" Width="850"
         Style="{StaticResource MaterialDesignWindow}"
@@ -33,17 +34,28 @@
                 <StackPanel Height="400" Width="228" Margin="0,50,0,0">
 
                     <!-- Home -->
-                    <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding HomeCommand}" IsChecked="True">
+                    <Menu:Btn Style="{StaticResource BtnStyle}"
+                              Command="{Binding HomeCommand}" 
+                              IsChecked="True">
                         <Grid Height="50" VerticalAlignment="Bottom">
-                            <Image Source="/Images/img_home.png" Style="{StaticResource Image_Style}"/>
-                            <TextBlock Text="Home" Style="{StaticResource Text_Style}"/>
+                          
+                            <materialDesign:PackIcon 
+                                Kind="HomeVariantOutline" 
+                                Margin="28,0,0,0" 
+                                VerticalAlignment="Center"
+                                Height="24" Width="24" 
+                                RenderTransformOrigin="0.037,0.341"
+                                Foreground="White"/>
+                            <TextBlock Text="Home"
+                                       Style="{StaticResource Text_Style}"/>
                         </Grid>
                     </Menu:Btn>
 
                     <!-- Customers -->
                     <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding CustomersCommand}">
                         <Grid>
-                            <Image Source="/Images/img_customer.png" Style="{StaticResource Image_Style}"/>
+                           
+                            <materialDesign:PackIcon Kind="AccountOutline" Margin="28,0,0,0" VerticalAlignment="Center" Height="24" Width="24" RenderTransformOrigin="0.037,0.341" Foreground="White"/>
                             <TextBlock Text="Customers" Style="{StaticResource Text_Style}"/>
                         </Grid>
                     </Menu:Btn>
@@ -51,7 +63,7 @@
                     <!-- Products -->
                     <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding ProductsCommand}">
                         <Grid>
-                            <Image Source="/Images/img_product.png" Style="{StaticResource Image_Style}"/>
+                            <materialDesign:PackIcon Kind="ArchiveOutline" Margin="28,0,0,0" VerticalAlignment="Center" Height="24" Width="24" RenderTransformOrigin="0.037,0.341" Foreground="White"/>
                             <TextBlock Text="Products" Style="{StaticResource Text_Style}"/>
                         </Grid>
                     </Menu:Btn>
@@ -59,7 +71,7 @@
                     <!-- Orders -->
                     <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding OrdersCommand}">
                         <Grid>
-                            <Image Source="/Images/img_order.png" Style="{StaticResource Image_Style}"/>
+                            <materialDesign:PackIcon Kind="InvoiceList" Margin="28,0,0,0" VerticalAlignment="Center" Height="24" Width="24" RenderTransformOrigin="0.037,0.341" Foreground="White"/>
                             <TextBlock Text="Orders" Style="{StaticResource Text_Style}"/>
                         </Grid>
                     </Menu:Btn>
@@ -77,8 +89,7 @@
                
             </Grid>
 
-            <!-- Close Button -->
-            <Button x:Name="CloseApp" Style="{StaticResource ExitApp}" Click="CloseApp_click"/>
+           
         </Grid>
         
     </Grid>

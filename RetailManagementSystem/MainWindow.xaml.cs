@@ -25,10 +25,7 @@ namespace RetailManagementSystem
             
         }
 
-        private void CloseApp_click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+       
 
     }
 }

@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="RetailManagementSystem.Components.BillSummaryCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RetailManagementSystem.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" 
+             >
+    <Grid>
+        <materialDesign:Card
+        UniformCornerRadius="10"
+            Width="500"
+        Padding="20"
+        Background="White"
+        >
+
+            <Grid>
+               
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Header -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Top Border -->
+                    <RowDefinition Height="*"/>
+                    <!-- Product List -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Bottom Border -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Footer -->
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <TextBlock Grid.Row="0"
+                       Text="Products Ordered"
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10" Grid.ColumnSpan="2"/>
+
+                <!-- Top Border -->
+                <Border Grid.Row="1"
+                    BorderBrush="{DynamicResource MaterialDesignDivider}"
+                    BorderThickness="0,1,0,0"
+                    Margin="0,5,0,5" Grid.ColumnSpan="2"/>
+
+                <!-- Product List -->
+                <ListView Grid.Row="2"
+                      ItemsSource="{Binding Items1}"
+                      BorderThickness="0"
+                      Background="Transparent"
+                      Margin="0,5,0,5" 
+                      Grid.ColumnSpan="2">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Product" DisplayMemberBinding="{Binding Code}" />
+                            <GridViewColumn Header="Quantity" DisplayMemberBinding="{Binding Name}"/>
+                            <GridViewColumn Header="Price" DisplayMemberBinding="{Binding Description}"/>
+                            <GridViewColumn Header="Total" DisplayMemberBinding="{Binding Total}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <!-- Bottom Border -->
+                <Border Grid.Row="3"
+                    BorderBrush="{DynamicResource MaterialDesignDivider}"
+                    BorderThickness="0,0,0,1"
+                    Margin="0,5,0,5" Grid.ColumnSpan="2"/>
+
+                <!-- Footer -->
+                <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Grid.Column="1">
+                    <TextBlock Text="Subtotal:" FontWeight="Bold" FontSize="16" Margin="0,0,10,0"/>
+                    <TextBlock Text="{Binding TotalPrice, StringFormat=C}" FontSize="16"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+</UserControl>
