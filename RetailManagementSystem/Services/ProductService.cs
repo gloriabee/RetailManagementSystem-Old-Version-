@@ -97,5 +97,24 @@ namespace RetailManagementSystem.Services
         {
             return _context.Products.Count();
         }
+
+        public List<int> GetProductIds()
+        {
+            return _context.Products.Select(p => p.Id).ToList();
+        }
+
+        // Get Product by ID
+        public string GetProductNameById(int productId)
+        {
+            var product = _context.Products.Find(productId);
+            return product?.ProductName ?? String.Empty;
+        }
+
+        // Get UnitPrice by ID
+        public decimal GetProductPriceById(int productId)
+        {
+            var unitPrice = _context.Products.Find(productId);
+            return unitPrice?.Price ?? 0m;
+        }
     }
 }

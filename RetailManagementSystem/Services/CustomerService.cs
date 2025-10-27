@@ -108,5 +108,19 @@ namespace RetailManagementSystem.Services
             return _context.Customers.Count();
         }
 
+        // Get Customer IDs category
+        public List<int> GetCustomerIds()
+        {
+            return _context.Customers.Select(c => c.Id).ToList();
+        }
+
+
+        // Get Customer by ID
+        public string GetCustomerNameById(int customerId)
+        {
+            var customer = _context.Customers.Find(customerId);
+            return customer?.Username ?? String.Empty;
+        }
+
     }
 }
