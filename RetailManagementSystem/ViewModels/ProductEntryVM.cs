@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RetailManagementSystem.ViewModels
 {
-    public class ProductEntryVM:ViewModelBase
+    public class ProductEntryVM : ViewModelBase
     {
         private readonly ProductService _productService;
 
@@ -44,14 +44,14 @@ namespace RetailManagementSystem.ViewModels
                 OnPropertyChanged(nameof(SelectedProductId));
                 UpdateProductName();
                 UpdateProductUnitPrice();
-               
+
 
             }
         }
 
         private void UpdateTotalPrice()
         {
-            Total= Quantity * decimal.Parse(SelectedProductUnitPrice);
+            Total = Quantity * decimal.Parse(SelectedProductUnitPrice);
         }
 
         private void UpdateProductName()

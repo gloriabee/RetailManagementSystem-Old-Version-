@@ -7,29 +7,17 @@
              x:Class="RetailManagementSystem.Components.GridTable"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <!-- Define a proxy to access the UserControl's DataContext from inner templates -->
-        <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}" />
-    </UserControl.Resources>
+    
     
     <Grid>
 
-        <!--<DataGrid x:Name="MyGrid"
-                  ItemsSource="{Binding data}"
-                  >
-            <DataGrid.Resources>
-                <Style TargetType="DataGridRow">
-                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
-                </Style>
-            </DataGrid.Resources>
-        </DataGrid>-->
+      
 
         <DataGrid
               AutoGenerateColumns="False"
               CanUserAddRows="False"
               HeadersVisibility="All"
-              ItemsSource="{Binding Items1}"
-              SelectionUnit="{Binding ElementName=selectionUnitComboBox, Path=SelectedValue}">
+              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ItemsSource}">
             <DataGrid.Columns>
                 
                 <!-- checkbox column --> 
@@ -40,7 +28,7 @@
                                         <Border
                           Background="Transparent">
                                             <CheckBox
-                            IsChecked="{Binding DataContext.IsAllItems1Selected, Source={x:Reference DataContextProxy}}" />
+                            IsChecked="{Binding DataContext.IsAllItems1Selected}" />
                                         </Border>
                                     </DataGridCheckBoxColumn.Header>
                                     <DataGridCheckBoxColumn.HeaderStyle>
@@ -57,7 +45,7 @@
                 <!-- Customer Column -->
                 <!-- by default a DataGridTextColumn will have the MaterialDesignDataGridTextColumnStyle and MaterialDesignDataGridTextColumnEditingStyle applied. See DataGridAssist.ApplyMaterialDesignColumnStyles attached property -->
                 <DataGridTextColumn
-                  Binding="{Binding Code}"
+                  Binding="{Binding Id}"
                   Header="Order ID" />
 
                 <!-- Customer Name Column -->
@@ -68,7 +56,7 @@
 
                 <!-- Ordered Date Column -->
                 <DataGridTextColumn
-                  Binding="{Binding Date}"
+                  Binding="{Binding OrderDate}"
                   Header="Date" />
                 
                 
@@ -80,8 +68,8 @@
 
                 <!-- Total price -->
                 <DataGridTextColumn
-                  Binding="{Binding Total}"
-                  Header="Date" />
+                  Binding="{Binding TotalAmount}"
+                  Header="Total" />
                 
                 <!-- Operations -->
                 <DataGridTemplateColumn Header="Operations">
@@ -90,6 +78,8 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <Button
                                       Content="View"
+                                      Command="{Binding DataContext.ShowOrderDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
+                                      CommandParameter="{Binding}" 
                                       Style="{StaticResource MaterialDesignFlatLightButton}"
                                       Foreground="#1f26b4"
                                   />

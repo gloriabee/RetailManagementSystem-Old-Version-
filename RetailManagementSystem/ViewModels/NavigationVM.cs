@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RetailManagementSystem.Utils;
+﻿using RetailManagementSystem.ViewModels;
+using System.Windows;
 using System.Windows.Input;
-
-
 
 namespace RetailManagementSystem.ViewModels
 {
-    public class NavigationVM:ViewModelBase
+    public class NavigationVM : ViewModelBase
     {
-        private object _currentView= new HomeVM();
+        private object _currentView = new HomeVM();
         public object CurrentView
         {
             get { return _currentView; }
-            set { _currentView = value; OnPropertyChanged();  }
+            set { _currentView = value; OnPropertyChanged(); }
         }
 
         public ICommand HomeCommand { get; set; }
@@ -25,7 +19,7 @@ namespace RetailManagementSystem.ViewModels
 
         public ICommand ProductsCommand { get; set; }
 
-        public ICommand OrdersCommand{get; set; }
+        public ICommand OrdersCommand { get; set; }
 
         private void Home(object obj) => CurrentView = new HomeVM();
         private void Customer(object obj) => CurrentView = new CustomerVM();

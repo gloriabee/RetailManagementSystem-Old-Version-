@@ -1,9 +1,14 @@
 ﻿using RetailManagementSystem.Components;
+using RetailManagementSystem.DTOs;
+using RetailManagementSystem.Models;
 using RetailManagementSystem.Services;
+using RetailManagementSystem.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using Wpf.Ui.Input;
 
 namespace RetailManagementSystem.ViewModels
 {
@@ -11,69 +16,108 @@ namespace RetailManagementSystem.ViewModels
     {
         private readonly CustomerService _customerService;
         private readonly ProductService _productService;
+        private readonly OrderRepository _orderRepository;
 
         public OrderVM()
         {
-            _customerService = new CustomerService();
-            _productService = new ProductService();
+           
 
             // Initialize collections
             CustomerIds = new ObservableCollection<int>();
             ProductIds = new ObservableCollection<int>();
             ProductEntries = new ObservableCollection<ProductEntryVM>();
+            Orders = new ObservableCollection<OrderCustomerDto>();
 
-            // Load data
-            LoadCustomerIds();
-            LoadProductIds();
+            // Initialize services
+            var dbContext = new RetailDbContext();
+            _customerService = new CustomerService();
+            _productService = new ProductService();
+            _orderRepository = new OrderRepository(dbContext);
 
             // Initialize commands
             ShowWindowCommand = new RelayCommand(_ => ShowAddOrderWindow());
             AddProductCommand = new RelayCommand(_ => AddProduct());
+            AddOrderCommand = new RelayCommand(AddOrder);
+            ShowOrderDetailsCommand = new RelayCommand<OrderCustomerDto>(orderCustomer =>
+            {
+                if (orderCustomer == null) return;
 
-            // Add default product entry
+                // Map to OrderDetailsDto
+                var orderDetails = new OrderDetailsDto
+                {
+                    OrderId = orderCustomer.Id,
+                    OrderDate = orderCustomer.OrderDate,
+                    Subtotal = orderCustomer.TotalAmount,
+                    CustomerName = orderCustomer.CustomerName,
+                    Address = orderCustomer.Address
+                    
+                };
+
+                ShowDetailsScreen(orderDetails);
+            });
+
+
+
+            //Add default product entry
             ProductEntries.Add(new ProductEntryVM
             {
                 ProductIds = ProductIds
             });
+
+            // Load data safely
+            SafeLoadData();
+        }
+
+        private void ShowDetailsScreen(OrderDetailsDto order)
+        {
+            if (order == null)
+            {
+                MessageBox.Show("Order not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Create a new Window and host the UserControl
+            var detailsWindow = new Window
+            {
+                Title = "Order Details",
+                Content = new Views.OrderDetails
+                {
+                    DataContext = new OrderDetailsVM(order) // Pass selected order instance
+                },
+                Width = 800,
+                Height = 450,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            detailsWindow.ShowDialog();
+        }
+
+        private void SafeLoadData()
+        {
+            try
+            {
+                LoadCustomerIds();
+                LoadProductIds();
+                LoadOrders();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading data: {ex.Message}", "Initialization Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         // ==== Commands ====
         public ICommand ShowWindowCommand { get; }
         public ICommand AddProductCommand { get; }
+        public ICommand AddOrderCommand { get; }
+        public ICommand ShowOrderDetailsCommand { get; } 
+
 
         // ==== Data Collections ====
-        private ObservableCollection<int> _customerIds;
-        public ObservableCollection<int> CustomerIds
-        {
-            get => _customerIds;
-            set
-            {
-                _customerIds = value;
-                OnPropertyChanged(nameof(CustomerIds));
-            }
-        }
-
-        private ObservableCollection<int> _productIds;
-        public ObservableCollection<int> ProductIds
-        {
-            get => _productIds;
-            set
-            {
-                _productIds = value;
-                OnPropertyChanged(nameof(ProductIds));
-            }
-        }
-
-        private ObservableCollection<ProductEntryVM> _productEntries;
-        public ObservableCollection<ProductEntryVM> ProductEntries
-        {
-            get => _productEntries;
-            set
-            {
-                _productEntries = value;
-                OnPropertyChanged(nameof(ProductEntries));
-            }
-        }
+        public ObservableCollection<int> CustomerIds { get; set; }
+        public ObservableCollection<int> ProductIds { get; set; }
+        public ObservableCollection<ProductEntryVM> ProductEntries { get; set; }
+        public ObservableCollection<OrderCustomerDto> Orders { get; set; }
 
         // ==== Selected Values ====
         private int _selectedCustomerId;
@@ -85,7 +129,6 @@ namespace RetailManagementSystem.ViewModels
                 _selectedCustomerId = value;
                 OnPropertyChanged(nameof(SelectedCustomerId));
                 UpdateCustomerName();
-
             }
         }
 
@@ -93,30 +136,26 @@ namespace RetailManagementSystem.ViewModels
         public string SelectedCustomerName
         {
             get => _selectedCustomerName;
-            set
-            {
-                _selectedCustomerName = value;
-                OnPropertyChanged(nameof(SelectedCustomerName));
-               
-            }
+            set { _selectedCustomerName = value; OnPropertyChanged(nameof(SelectedCustomerName)); }
         }
-
-
 
         private void UpdateCustomerName()
         {
-            SelectedCustomerName = _customerService.GetCustomerNameById(SelectedCustomerId);
+            SelectedCustomerName = _customerService?.GetCustomerNameById(SelectedCustomerId) ?? "Unknown";
         }
 
         // ==== Methods ====
-
         private void ShowAddOrderWindow()
         {
-            var addWindow = new AddOrder
+            try
             {
-                DataContext = this
-            };
-            addWindow.ShowDialog();
+                var addWindow = new AddOrder { DataContext = this };
+                addWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening Add Order window: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void AddProduct()
@@ -129,14 +168,63 @@ namespace RetailManagementSystem.ViewModels
 
         private void LoadCustomerIds()
         {
-            var ids = _customerService.GetCustomerIds();
+            var ids = _customerService?.GetCustomerIds() ?? new List<int>();
             CustomerIds = new ObservableCollection<int>(ids);
         }
 
         private void LoadProductIds()
         {
-            var ids = _productService.GetProductIds();
+            var ids = _productService?.GetProductIds() ?? new List<int>();
             ProductIds = new ObservableCollection<int>(ids);
+        }
+
+        private void LoadOrders()
+        {
+            var allOrders = _orderRepository?.GetAllOrders() ?? new List<OrderCustomerDto>();
+            Orders = new ObservableCollection<OrderCustomerDto>(allOrders);
+        }
+
+        
+
+        private void AddOrder(object parameter)
+        {
+            try
+            {
+                if (ProductEntries.Count == 0)
+                {
+                    MessageBox.Show("Please add at least one product.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var order = new Order
+                {
+                    CustomerId = SelectedCustomerId,
+                    OrderDate = DateTime.UtcNow,
+                    TotalAmount = ProductEntries.Sum(p => p.Total)
+                };
+
+                _orderRepository.Add(order);
+
+                foreach (var pe in ProductEntries)
+                {
+                    var detail = new OrderDetail
+                    {
+                        OrderId = order.Id,
+                        ProductId = pe.SelectedProductId,
+                        Quantity = pe.Quantity,
+                        UnitPrice = Convert.ToDecimal(pe.SelectedProductUnitPrice)
+                    };
+                    _orderRepository.AddDetails(detail);
+                }
+
+                MessageBox.Show("Order added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                LoadOrders();
+            }
+            catch (Exception e)
+            {
+                var error = e.InnerException?.Message ?? e.Message;
+                MessageBox.Show($"Error adding order: {error}", "Add Order Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

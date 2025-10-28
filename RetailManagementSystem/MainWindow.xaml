@@ -12,9 +12,9 @@
         WindowStartupLocation="CenterScreen"
         Background="Transparent">
 
-    <Window.DataContext>
-        <vm:NavigationVM/>
-    </Window.DataContext>
+            <Window.DataContext>
+                <vm:NavigationVM/>
+            </Window.DataContext>
     
     <Grid>
         <!-- Window Border -->

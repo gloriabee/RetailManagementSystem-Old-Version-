@@ -24,5 +24,28 @@ namespace RetailManagementSystem.Components
         {
             InitializeComponent();
         }
+
+
+        public int OrderId
+        {
+            get { return (int)GetValue(OrderIdProperty); }
+            set { SetValue(OrderIdProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OrderIdProperty =
+            DependencyProperty.Register("OrderId", typeof(int), typeof(OrderInfoCard), new PropertyMetadata(0));
+
+
+        public DateTime OrderDate
+        {
+            get { return (DateTime)GetValue(OrderDateProperty); }
+            set { SetValue(OrderDateProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OrderDateProperty =
+            DependencyProperty.Register("OrderDate", typeof(DateTime), typeof(OrderInfoCard), new PropertyMetadata(DateTime.UtcNow));
+
     }
 }

@@ -9,6 +9,7 @@ namespace RetailManagementSystem.Views
         public Orders()
         {
             InitializeComponent();
+         
         }
 
         
