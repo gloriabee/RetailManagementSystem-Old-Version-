@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using RetailManagementSystem.DTOs;
 using RetailManagementSystem.Models;
 using RetailManagementSystem.Services;
 using RetailManagementSystem.Views;
@@ -27,6 +28,7 @@ namespace RetailManagementSystem.ViewModels
         {
             _customerService = new CustomerService();
             MyCustomers = new ObservableCollection<Customer>();
+            //TopCustomers= new ObservableCollection<TopCustomerDto>();
 
             // Initialize commands
             FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => CurrentPage > 1);
@@ -49,7 +51,31 @@ namespace RetailManagementSystem.ViewModels
             DeleteCommand = new RelayCommand(DeleteCustomer);
             DeleteAllCommand = new RelayCommand(_ => DeleteSelectedCustomers());
             LoadCustomers();
+            //LoadTopCustomers();
         }
+
+        //private void LoadTopCustomers()
+        //{
+        //    try
+        //    {
+        //        var topCustomers = _customerService.GetTopCustomers(5);
+
+        //        if (TopCustomers == null)
+        //            TopCustomers = new ObservableCollection<TopCustomerDto>();
+        //        else
+        //            TopCustomers.Clear();
+
+        //        foreach (var c in topCustomers)
+        //            TopCustomers.Add(c);
+
+        //        OnPropertyChanged(nameof(TopCustomers));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error loading top customers: {ex.Message}");
+        //    }
+        //}
+
 
 
 
@@ -132,6 +158,13 @@ namespace RetailManagementSystem.ViewModels
         }
 
         public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+
+        //private ObservableCollection<TopCustomerDto> _topCustomers;
+        //public ObservableCollection<TopCustomerDto> TopCustomers
+        //{
+        //    get => _topCustomers;
+        //    set { _topCustomers = value; OnPropertyChanged(); }
+        //}
 
         // Commands
 

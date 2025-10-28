@@ -61,7 +61,9 @@
                 CustomerCountry="{Binding Order.Country}"/>
         </StackPanel>
 
-        <components:BillSummaryCard Grid.Row="2" Margin="10,10,10,-63"/>
+        <components:BillSummaryCard 
+            Grid.Row="2" 
+            Margin="10,10,10,-63"/>
 
 
     </Grid>

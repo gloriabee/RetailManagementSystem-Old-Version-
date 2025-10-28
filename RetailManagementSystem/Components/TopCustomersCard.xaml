@@ -46,16 +46,16 @@
 
                 <!-- Product List -->
                 <ListView Grid.Row="2"
-                   ItemsSource="{Binding Items1}"
+                   ItemsSource="{Binding TopCustomers,RelativeSource={RelativeSource AncestorType=UserControl}}"
                    BorderThickness="0"
                    Background="Transparent"
                    Margin="0,5,0,5" 
                   >
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Code}"/>
-                            <GridViewColumn Header="Total Orders" DisplayMemberBinding="{Binding Name}"/>
-                            <GridViewColumn Header="Total Spent" DisplayMemberBinding="{Binding Description}"/>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                            <GridViewColumn Header="Total Orders" DisplayMemberBinding="{Binding TotalOrders}"/>
+                            <GridViewColumn Header="Total Spent" DisplayMemberBinding="{Binding TotalSpent}"/>
                         </GridView>
                     </ListView.View>
                 </ListView>

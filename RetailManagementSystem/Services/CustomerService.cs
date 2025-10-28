@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RetailManagementSystem.DTOs;
 using RetailManagementSystem.Models;
 
 namespace RetailManagementSystem.Services
@@ -122,5 +123,29 @@ namespace RetailManagementSystem.Services
             return customer?.Username ?? String.Empty;
         }
 
+        public List<TopCustomerDto> GetTopCustomers(int count)
+        {
+            var topCustomers = _context.Customers
+        .Join(
+            _context.Orders,
+            c => c.Id,              
+            o => o.CustomerId,      
+            (c, o) => new { c, o }  
+        )
+        .GroupBy(x => new { x.c.Id, x.c.Username })
+        .Select(g => new TopCustomerDto
+        {
+            
+            Name = g.Key.Username,
+            TotalOrders = g.Count(),
+            TotalSpent = g.Sum(x => x.o.TotalAmount),
+            
+        })
+        .OrderByDescending(x => x.TotalOrders)
+        .Take(count)
+        .ToList();
+
+         return topCustomers;
+        }
     }
 }
