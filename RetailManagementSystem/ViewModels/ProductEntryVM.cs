@@ -20,7 +20,7 @@ namespace RetailManagementSystem.ViewModels
 
         private void LoadProductIds()
         {
-            var ids = _productService.GetProductIds();
+            var ids = _productService.GetProductIds() ?? new List<int>();
             ProductIds = new ObservableCollection<int>(ids);
         }
         private ObservableCollection<int> _productIds;

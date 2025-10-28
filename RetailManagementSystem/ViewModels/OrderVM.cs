@@ -26,7 +26,7 @@ namespace RetailManagementSystem.ViewModels
             CustomerIds = new ObservableCollection<int>();
             ProductIds = new ObservableCollection<int>();
             ProductEntries = new ObservableCollection<ProductEntryVM>();
-            Orders = new ObservableCollection<OrderCustomerDto>();
+            Orders = new ObservableCollection<OrderDetailsDto>();
 
             // Initialize services
             var dbContext = new RetailDbContext();
@@ -38,34 +38,19 @@ namespace RetailManagementSystem.ViewModels
             ShowWindowCommand = new RelayCommand(_ => ShowAddOrderWindow());
             AddProductCommand = new RelayCommand(_ => AddProduct());
             AddOrderCommand = new RelayCommand(AddOrder);
-            ShowOrderDetailsCommand = new RelayCommand<OrderCustomerDto>(orderCustomer =>
+            ShowOrderDetailsCommand = new RelayCommand<OrderDetailsDto>(orderCustomer =>
             {
                 if (orderCustomer == null) return;
-
-                // Map to OrderDetailsDto
-                var orderDetails = new OrderDetailsDto
-                {
-                    OrderId = orderCustomer.Id,
-                    OrderDate = orderCustomer.OrderDate,
-                    Subtotal = orderCustomer.TotalAmount,
-                    CustomerName = orderCustomer.CustomerName,
-                    Address = orderCustomer.Address
-                    
-                };
-
-                ShowDetailsScreen(orderDetails);
+                ShowDetailsScreen(orderCustomer);
             });
 
 
 
-            //Add default product entry
-            ProductEntries.Add(new ProductEntryVM
-            {
-                ProductIds = ProductIds
-            });
 
             // Load data safely
             SafeLoadData();
+
+            AddProduct();
         }
 
         private void ShowDetailsScreen(OrderDetailsDto order)
@@ -97,7 +82,6 @@ namespace RetailManagementSystem.ViewModels
             try
             {
                 LoadCustomerIds();
-                LoadProductIds();
                 LoadOrders();
             }
             catch (Exception ex)
@@ -117,7 +101,7 @@ namespace RetailManagementSystem.ViewModels
         public ObservableCollection<int> CustomerIds { get; set; }
         public ObservableCollection<int> ProductIds { get; set; }
         public ObservableCollection<ProductEntryVM> ProductEntries { get; set; }
-        public ObservableCollection<OrderCustomerDto> Orders { get; set; }
+        public ObservableCollection<OrderDetailsDto> Orders { get; set; }
 
         // ==== Selected Values ====
         private int _selectedCustomerId;
@@ -160,10 +144,7 @@ namespace RetailManagementSystem.ViewModels
 
         private void AddProduct()
         {
-            ProductEntries.Add(new ProductEntryVM
-            {
-                ProductIds = ProductIds
-            });
+            ProductEntries.Add(new ProductEntryVM());
         }
 
         private void LoadCustomerIds()
@@ -172,16 +153,11 @@ namespace RetailManagementSystem.ViewModels
             CustomerIds = new ObservableCollection<int>(ids);
         }
 
-        private void LoadProductIds()
-        {
-            var ids = _productService?.GetProductIds() ?? new List<int>();
-            ProductIds = new ObservableCollection<int>(ids);
-        }
 
         private void LoadOrders()
         {
-            var allOrders = _orderRepository?.GetAllOrders() ?? new List<OrderCustomerDto>();
-            Orders = new ObservableCollection<OrderCustomerDto>(allOrders);
+            var allOrders = _orderRepository?.GetAllOrders() ?? new List<OrderDetailsDto>();
+            Orders = new ObservableCollection<OrderDetailsDto>(allOrders);
         }
 
         

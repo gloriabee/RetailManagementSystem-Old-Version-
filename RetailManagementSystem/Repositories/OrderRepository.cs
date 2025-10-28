@@ -29,20 +29,23 @@ namespace RetailManagementSystem
             _context.SaveChanges();
         }
 
-        public List<OrderCustomerDto> GetAllOrders()
+        public List<OrderDetailsDto> GetAllOrders()
         {
            var ordersWithCustomerInfo= _context.Orders
                 .Join(
                     _context.Customers,
                     order => order.CustomerId,
                     customer => customer.Id,
-                    (order, customer) => new OrderCustomerDto
+                    (order, customer) => new OrderDetailsDto
                     {
-                        Id = order.Id,
+                        OrderId = order.Id,
                         OrderDate = order.OrderDate,
-                        TotalAmount = order.TotalAmount,
+                        Subtotal = order.TotalAmount,
                         CustomerName= customer.Username,
-                        Address= customer.Address
+                        Email= customer.Email,
+                        Phone= customer.Phone,
+                        Address = customer.Address,
+                        Country = customer.Country
                     }
                 ).ToList();
             return ordersWithCustomerInfo;

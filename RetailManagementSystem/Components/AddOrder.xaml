@@ -80,7 +80,7 @@
                                         <TextBlock Text="Quantity *" FontWeight="SemiBold"/>
                                         <materialDesign:NumericUpDown 
                                             Value="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            Minimum="1"
+                                            Minimum="0"
                                             Maximum="100"/>
                                     </StackPanel>
                                 </Grid>

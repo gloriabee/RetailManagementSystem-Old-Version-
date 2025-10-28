@@ -45,7 +45,7 @@
                Margin="0,0,10,0"/>
                         <TextBlock
                Style="{StaticResource MaterialDesignBody2TextBlock}"
-               Text="#CM9801" />
+               Text="{Binding CustomerName, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
                         <!-- Email: -->
                         <TextBlock
@@ -58,7 +58,7 @@
                         <TextBlock
                HorizontalAlignment="Left"
                Style="{StaticResource MaterialDesignBody2TextBlock}"
-               Text="Feb 2, 2025 2:30 PM" />
+               Text="{Binding CustomerEmail, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
 
                         <!-- Email: -->
@@ -71,7 +71,7 @@
                         <TextBlock
                HorizontalAlignment="Left"
                Style="{StaticResource MaterialDesignBody2TextBlock}"
-               Text="Feb 2, 2025 2:30 PM" />
+               Text="{Binding CustomerPhone, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
                         <!--Address-->
                         <TextBlock
@@ -84,7 +84,7 @@
                         <TextBlock
                HorizontalAlignment="Left"
                Style="{StaticResource MaterialDesignBody2TextBlock}"
-               Text="Feb 2, 2025 2:30 PM" />
+               Text="{Binding CustomerAddress, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
                         <!-- Country -->
                         <TextBlock
@@ -97,7 +97,7 @@
                         <TextBlock
                 HorizontalAlignment="Left"
                 Style="{StaticResource MaterialDesignBody2TextBlock}"
-                Text="Feb 2, 2025 2:30 PM" />
+                Text="{Binding CustomerCountry, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
                     </UniformGrid>
                 </StackPanel>
