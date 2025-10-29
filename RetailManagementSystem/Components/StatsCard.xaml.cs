@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace RetailManagementSystem.Components
@@ -37,5 +38,7 @@ namespace RetailManagementSystem.Components
             get => (ImageSource)GetValue(IconProperty);
             set => SetValue(IconProperty, value);
         }
+
+        
     }
 }

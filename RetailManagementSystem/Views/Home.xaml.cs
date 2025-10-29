@@ -39,5 +39,7 @@ namespace RetailManagementSystem.Views
         {
             MessageBox.Show("Successfully joined the Enterprise tier.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+        
     }
 }

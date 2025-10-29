@@ -43,11 +43,11 @@
                                                  Foreground="#00C3FF"
                                                  VerticalAlignment="Center"/>
                         <StackPanel Margin="10,0,0,0">
-                            <TextBlock Text="WPF"
+                            <TextBlock Text="Retail"
                                        FontWeight="Bold"
                                        FontSize="18"
                                        Foreground="White"/>
-                            <TextBlock Text="Retail Management"
+                            <TextBlock Text="Data Management"
                                        FontSize="12"
                                        Foreground="White"/>
                         </StackPanel>

@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="/Styles/Text.xaml"/>
                 <ResourceDictionary Source="/Styles/Button.xaml"/>
                 <ResourceDictionary Source="/Styles/DataGrid.xaml"/>
+                <ResourceDictionary Source="/Styles/StatsCard.xaml"/>
                 <ResourceDictionary Source="/Utils/DataTemplate.xaml"/>
 
                 <!-- Light Material Design Theme -->

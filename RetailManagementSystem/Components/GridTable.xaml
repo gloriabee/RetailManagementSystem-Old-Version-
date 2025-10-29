@@ -6,12 +6,14 @@
              xmlns:local="clr-namespace:RetailManagementSystem.Components"
              x:Class="RetailManagementSystem.Components.GridTable"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             >
     
     
     <Grid>
 
         <DataGrid
+              Background="Transparent"
               AutoGenerateColumns="False"
               CanUserAddRows="False"
               HeadersVisibility="All"
@@ -78,18 +80,21 @@
                                       Content="View"
                                       Command="{Binding DataContext.ShowOrderDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=2}}"
                                       CommandParameter="{Binding}" 
-                                      Style="{StaticResource MaterialDesignFlatLightButton}"
+                                      Style="{StaticResource MaterialDesignOutlinedLightButton}"
                                       Foreground="#1f26b4"
+                                      Margin="0,0,5,0"
                                   />
                                  <Button
                                       Content="Edit"
-                                      Style="{StaticResource MaterialDesignFlatLightButton}"
+                                      Style="{StaticResource MaterialDesignOutlinedLightButton}"
                                       Foreground="#111111"
+                                     Margin="0,0,5,0"
                                   />
                                 <Button
                                        Content="Delete"
-                                       Style="{StaticResource MaterialDesignFlatLightButton}"
+                                       Style="{StaticResource MaterialDesignOutlinedLightButton}"
                                        Foreground="#c42c52"
+                                        Margin="0,0,5,0"
                                    />
                             </StackPanel>
                          </DataTemplate>
