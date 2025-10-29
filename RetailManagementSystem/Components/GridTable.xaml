@@ -11,8 +11,6 @@
     
     <Grid>
 
-      
-
         <DataGrid
               AutoGenerateColumns="False"
               CanUserAddRows="False"
@@ -45,7 +43,7 @@
                 <!-- Customer Column -->
                 <!-- by default a DataGridTextColumn will have the MaterialDesignDataGridTextColumnStyle and MaterialDesignDataGridTextColumnEditingStyle applied. See DataGridAssist.ApplyMaterialDesignColumnStyles attached property -->
                 <DataGridTextColumn
-                  Binding="{Binding Id}"
+                  Binding="{Binding OrderId}"
                   Header="Order ID" />
 
                 <!-- Customer Name Column -->
@@ -68,7 +66,7 @@
 
                 <!-- Total price -->
                 <DataGridTextColumn
-                  Binding="{Binding TotalAmount}"
+                  Binding="{Binding Subtotal,StringFormat=C}"
                   Header="Total" />
                 
                 <!-- Operations -->

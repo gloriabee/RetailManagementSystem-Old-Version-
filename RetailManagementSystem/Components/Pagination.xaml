@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="80" d:DesignWidth="800">
 
-    <Grid Background="#1E1E1E" >
+    <Grid>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -22,15 +22,15 @@
                     Margin="0,0,10,0">
 
             <TextBlock Text="Rows per page:"
-                       Foreground="White"
+                       Foreground="Black"
                        VerticalAlignment="Center"
                        Margin="0,0,10,0"/>
 
             <ComboBox Width="80"
                       ItemsSource="{Binding PageSizes}"
                       SelectedItem="{Binding PageSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      Foreground="White"
-                      Background="#2B2B2B"
+                      Background="White"
+                      Foreground="#2B2B2B"
                       Style="{StaticResource MaterialDesignOutlinedComboBox}"
                       Padding="5,2"
                       Margin="0,0,0,0"/>
@@ -42,43 +42,54 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center">
 
-            <Button Content="⏮"
+            <Button 
                     Command="{Binding FirstPageCommand}"
                     Style="{StaticResource MaterialDesignOutlinedButton}"
                     Margin="5"
-                    ToolTip="First page"/>
+                    ToolTip="First page">
+                <materialDesign:PackIcon Kind="ChevronDoubleLeft" Width="20" Height="20" />
+            </Button>
 
-            <Button Content="◀"
+            <Button 
                     Command="{Binding PrevPageCommand}"
                     Style="{StaticResource MaterialDesignOutlinedButton}"
                     Margin="5"
-                    ToolTip="Previous page"/>
+                    ToolTip="Previous page">
+                <materialDesign:PackIcon Kind="ChevronLeft" Width="20" Height="20" />
+            </Button>
 
-            <TextBlock Text="{Binding CurrentPage}" 
-                       Foreground="White"
+            <TextBlock 
+                       
+                       Text="Page 1"
+                       Foreground="Black"
                        VerticalAlignment="Center"
                        Margin="10,0"/>
 
             <TextBlock Text="of"
-                       Foreground="White"
+                       Foreground="Black"
                        VerticalAlignment="Center"
                        Margin="5,0"/>
 
-            <TextBlock Text="{Binding TotalPages}"
-                       Foreground="White"
+            <TextBlock 
+                       Text="5"
+                       Foreground="Black"
                        VerticalAlignment="Center"/>
 
-            <Button Content="▶"
+            <Button 
                     Command="{Binding NextPageCommand}"
                     Style="{StaticResource MaterialDesignOutlinedButton}"
                     Margin="5"
-                    ToolTip="Next page"/>
+                    ToolTip="Next page">
+                <materialDesign:PackIcon Kind="ChevronRight" Width="20" Height="20" />
+            </Button>
 
-            <Button Content="⏭"
+            <Button
                     Command="{Binding LastPageCommand}"
                     Style="{StaticResource MaterialDesignOutlinedButton}"
                     Margin="5"
-                    ToolTip="Last page"/>
+                    ToolTip="Last page">
+                <materialDesign:PackIcon Kind="ChevronDoubleRight" Width="20" Height="20"/>
+            </Button>
         </StackPanel>
 
     </Grid>

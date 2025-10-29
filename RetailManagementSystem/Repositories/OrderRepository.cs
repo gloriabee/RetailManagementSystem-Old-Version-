@@ -51,6 +51,23 @@ namespace RetailManagementSystem
             return ordersWithCustomerInfo;
         }
 
-       
+        public List<OrderProductDto> GetOrderProducts(int orderId)
+        {
+            var products = _context.OrderDetails
+                .Where(od => od.OrderId == orderId)
+                .Join(
+                    _context.Products,
+                    od => od.ProductId,
+                    p => p.Id,
+                    (od, p) => new OrderProductDto
+                    {
+                        Id = p.Id,
+                        ProductName = p.ProductName,
+                        Quantity = od.Quantity,
+                        UnitPrice = od.UnitPrice
+                    }
+                ).ToList();
+            return products;
+        }
     }
 }

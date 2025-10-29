@@ -13,6 +13,7 @@ namespace RetailManagementSystem.Interfaces
         void Add(Order order);
         void AddDetails(OrderDetail details);
         List<OrderDetailsDto> GetAllOrders();
+        List<OrderProductDto> GetOrderProducts(int orderId);
 
     }
 }

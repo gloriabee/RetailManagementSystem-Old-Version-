@@ -1,4 +1,4 @@
-﻿using LiveChartsCore;
+﻿
 
 using RetailManagementSystem.Models;
 using RetailManagementSystem.Services;
@@ -23,7 +23,7 @@ namespace RetailManagementSystem.ViewModels
         public string Category { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
-        public IEnumerable<ISeries> ChartSeries { get; set; }
+       
 
 
         public ProductVM()

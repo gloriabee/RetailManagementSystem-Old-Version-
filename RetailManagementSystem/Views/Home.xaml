@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:components="clr-namespace:RetailManagementSystem.Components"
              >
-    <Grid>
+    <Grid Margin="20,20,20,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -22,7 +22,7 @@
             <components:StatsCard Title="Total&#x0a;Customers" Value="{Binding totalCustomers}" Icon="/Images/img_customer.png"/>
             <components:StatsCard Title="Total&#x0a;Products" Value="{Binding totalProducts}" Icon="/Images/img_product.png"/>
             <components:StatsCard Title="Total&#x0a;Orders" Value="{Binding totalOrders}" Icon="/Images/img_order.png"/>
-            <components:StatsCard Title="Total&#x0a;Revenue" Value="{Binding totalRevenue}" Icon="/Images/img_transaction.png"/>
+            <components:StatsCard Title="Total&#x0a;Revenue" Value="{Binding totalRevenue,StringFormat=C}" Icon="/Images/img_transaction.png"/>
         </UniformGrid>
 
         <Grid Grid.Row="2" Margin="0,0,0,30">

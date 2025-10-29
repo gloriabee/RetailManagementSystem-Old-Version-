@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:RetailManagementSystem.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewmodels="clr-namespace:RetailManagementSystem.ViewModels"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d"
             >
 
@@ -27,6 +28,23 @@
                            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                            FontWeight="Bold"
                            Margin="0,0,0,10" />
+
+                <Grid Width="Auto" Height="300" Grid.Row="1">
+                    <lvc:CartesianChart Series="{Binding seriescollection}" LegendLocation="Bottom">
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis 
+                                  LabelFormatter="{Binding formatter}"
+                                  MinValue="0">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Step="50" />
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Labels="{Binding labels}"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+                </Grid>
 
                    
             </Grid>

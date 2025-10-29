@@ -55,7 +55,7 @@
                         <GridView>
                             <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
                             <GridViewColumn Header="Total Orders" DisplayMemberBinding="{Binding TotalOrders}"/>
-                            <GridViewColumn Header="Total Spent" DisplayMemberBinding="{Binding TotalSpent}"/>
+                            <GridViewColumn Header="Total Spent" DisplayMemberBinding="{Binding TotalSpent,StringFormat=C}"/>
                         </GridView>
                     </ListView.View>
                 </ListView>

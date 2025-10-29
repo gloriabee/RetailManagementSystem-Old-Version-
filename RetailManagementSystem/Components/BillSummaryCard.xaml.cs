@@ -1,5 +1,7 @@
-﻿using System;
+﻿using RetailManagementSystem.DTOs;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,15 +29,29 @@ namespace RetailManagementSystem.Components
 
 
 
-        public int MyProperty
+        public ObservableCollection<OrderProductDto> OrderedProducts
         {
-            get { return (int)GetValue(MyPropertyProperty); }
-            set { SetValue(MyPropertyProperty, value); }
+            get { return (ObservableCollection<OrderProductDto>)GetValue(OrderedProductsProperty); }
+            set { SetValue(OrderedProductsProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MyPropertyProperty =
-            DependencyProperty.Register("MyProperty", typeof(int), typeof(ownerclass), new PropertyMetadata(0));
+        public static readonly DependencyProperty OrderedProductsProperty =
+            DependencyProperty.Register("OrderedProducts", typeof(ObservableCollection<OrderProductDto>), typeof(BillSummaryCard), new PropertyMetadata(null));
+
+
+
+
+        public decimal SubTotal
+        {
+            get { return (decimal)GetValue(SubTotalProperty); }
+            set { SetValue(SubTotalProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SubTotal.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SubTotalProperty =
+            DependencyProperty.Register("SubTotal", typeof(decimal), typeof(BillSummaryCard), new PropertyMetadata(0m));
+
 
 
     }

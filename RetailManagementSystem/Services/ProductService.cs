@@ -1,7 +1,8 @@
-﻿using System;
+﻿using RetailManagementSystem.DTOs;
+using RetailManagementSystem.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using RetailManagementSystem.Models;
 
 namespace RetailManagementSystem.Services
 {
@@ -115,6 +116,25 @@ namespace RetailManagementSystem.Services
         {
             var unitPrice = _context.Products.Find(productId);
             return unitPrice?.Price ?? 0m;
+        }
+
+        // ွGet Top Products
+        public List<TopCategoryDto> GetTopCustomers(int count)
+        {
+            var topCustomers = _context.Products
+                .GroupBy(p=> p.Category)
+                .Select(g=> new TopCategoryDto
+                {
+                        Category=g.Key,
+                        TotalProducts= g.Count()
+
+                }
+                )
+        .OrderByDescending(x => x.TotalProducts)
+        .Take(count)
+        .ToList();
+
+            return topCustomers;
         }
     }
 }

@@ -40,16 +40,31 @@
 
             <!-- Right section -->
             <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Width="100" Height="35"
+                        Margin="0,0,5,0"
+                Command="{Binding ShowWindowCommand}"
+                Style="{StaticResource MaterialDesignRaisedButton}"
+                Background="#1F26B4"  
+                Foreground="White"
+            ToolTip="Add new item">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <materialDesign:PackIcon Kind="PackageVariantClosedPlus" Width="20" Height="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="Add" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+
                 <Button 
-                    Content="Add" 
+                    Grid.Column="1" 
                     Width="100" Height="35"
-                    VerticalAlignment="Center"
-                    Margin="10,0,10,0"
-                    Style="{StaticResource MaterialDesignRaisedDarkButton}"
-                    Command="{Binding ShowWindowCommand}"/>
-                <Button Grid.Column="1" Content="Delete" Width="100" Height="35"
-                    VerticalAlignment="Center"
-                    Background="Red"/>
+                    Foreground="White"
+                    Background="#C24C52"
+                 >
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <materialDesign:PackIcon Kind="TrashCanOutline" Width="20" Height="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="Delete" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
 
         </Grid>
@@ -57,9 +72,10 @@
 
         <!-- Datalist table -->
         <components:SearchBox 
+            Margin="0,10,0,10"
             FilterText="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             Grid.Row="1"
-            materialDesign:HintAssist.Hint="search"
+            materialDesign:HintAssist.Hint="Type ID or Customer to search"
             HorizontalAlignment="Right"/>
 
         <components:GridTable Grid.Row="2" ItemsSource="{Binding Orders}"/>

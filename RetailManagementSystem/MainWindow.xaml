@@ -7,90 +7,122 @@
         xmlns:Menu="clr-namespace:RetailManagementSystem.Utils"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Retail Management Syste" Height="600" Width="850"
-        Style="{StaticResource MaterialDesignWindow}"
+        Title="Retail Management System"
+        Height="600" Width="900"
         WindowStartupLocation="CenterScreen"
+        Style="{StaticResource MaterialDesignWindow}"
         Background="Transparent">
 
-            <Window.DataContext>
-                <vm:NavigationVM/>
-            </Window.DataContext>
-    
+    <Window.DataContext>
+        <vm:NavigationVM/>
+    </Window.DataContext>
+
     <Grid>
-        <!-- Window Border -->
+        <!-- Background Border -->
         <Border Background="#212529" CornerRadius="20"/>
 
-        <!-- Base Grid -->
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Navigation Panel -->
-            <Grid Grid.Column="0">
-                <Border Background="#131B2F" CornerRadius="20,0,0,20"/>
+            <!-- ✅ Sidebar -->
+            <Border Grid.Column="0"
+                    Background="#131B2F"
+                    CornerRadius="20,0,0,20"
+                    Padding="0,40,0,0">
 
-                <StackPanel Height="400" Width="228" Margin="0,50,0,0">
-
-                    <!-- Home -->
-                    <Menu:Btn Style="{StaticResource BtnStyle}"
-                              Command="{Binding HomeCommand}" 
-                              IsChecked="True">
-                        <Grid Height="50" VerticalAlignment="Bottom">
-                          
-                            <materialDesign:PackIcon 
-                                Kind="HomeVariantOutline" 
-                                Margin="28,0,0,0" 
+                <StackPanel>
+                    <!-- Logo -->
+                    <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Center"
-                                Height="24" Width="24" 
-                                RenderTransformOrigin="0.037,0.341"
-                                Foreground="White"/>
+                                Margin="20,0,0,40">
+                        <materialDesign:PackIcon Kind="ShoppingOutline"
+                                                 Width="40" Height="40"
+                                                 Foreground="#00C3FF"
+                                                 VerticalAlignment="Center"/>
+                        <StackPanel Margin="10,0,0,0">
+                            <TextBlock Text="WPF"
+                                       FontWeight="Bold"
+                                       FontSize="18"
+                                       Foreground="White"/>
+                            <TextBlock Text="Retail Management"
+                                       FontSize="12"
+                                       Foreground="White"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- 🏠 Navigation Buttons -->
+                    <Menu:Btn Style="{StaticResource BtnStyle}"
+                              Command="{Binding HomeCommand}"
+                              IsChecked="True"
+                              Margin="0,5">
+                        <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                            <materialDesign:PackIcon Kind="HomeOutline"
+                                                     Width="22" Height="22"
+                                                     VerticalAlignment="Center"
+                                                     Foreground="White"/>
                             <TextBlock Text="Home"
-                                       Style="{StaticResource Text_Style}"/>
-                        </Grid>
+                                       Foreground="White"
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
                     </Menu:Btn>
 
-                    <!-- Customers -->
-                    <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding CustomersCommand}">
-                        <Grid>
-                           
-                            <materialDesign:PackIcon Kind="AccountOutline" Margin="28,0,0,0" VerticalAlignment="Center" Height="24" Width="24" RenderTransformOrigin="0.037,0.341" Foreground="White"/>
-                            <TextBlock Text="Customers" Style="{StaticResource Text_Style}"/>
-                        </Grid>
+                    <Menu:Btn Style="{StaticResource BtnStyle}"
+                              Command="{Binding CustomersCommand}"
+                              Margin="0,5">
+                        <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                            <materialDesign:PackIcon Kind="AccountOutline"
+                                                     Width="22" Height="22"
+                                                     VerticalAlignment="Center"
+                                                     Foreground="White"/>
+                            <TextBlock Text="Customers"
+                                       Foreground="White"
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
                     </Menu:Btn>
 
-                    <!-- Products -->
-                    <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding ProductsCommand}">
-                        <Grid>
-                            <materialDesign:PackIcon Kind="ArchiveOutline" Margin="28,0,0,0" VerticalAlignment="Center" Height="24" Width="24" RenderTransformOrigin="0.037,0.341" Foreground="White"/>
-                            <TextBlock Text="Products" Style="{StaticResource Text_Style}"/>
-                        </Grid>
-                    </Menu:Btn>
-                    
-                    <!-- Orders -->
-                    <Menu:Btn Style="{StaticResource BtnStyle}" Command="{Binding OrdersCommand}">
-                        <Grid>
-                            <materialDesign:PackIcon Kind="InvoiceList" Margin="28,0,0,0" VerticalAlignment="Center" Height="24" Width="24" RenderTransformOrigin="0.037,0.341" Foreground="White"/>
-                            <TextBlock Text="Orders" Style="{StaticResource Text_Style}"/>
-                        </Grid>
+                    <Menu:Btn Style="{StaticResource BtnStyle}"
+                              Command="{Binding ProductsCommand}"
+                              Margin="0,5">
+                        <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                            <materialDesign:PackIcon Kind="ArchiveOutline"
+                                                     Width="22" Height="22"
+                                                     VerticalAlignment="Center"
+                                                     Foreground="White"/>
+                            <TextBlock Text="Products"
+                                       Foreground="White"
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
                     </Menu:Btn>
 
+                    <Menu:Btn Style="{StaticResource BtnStyle}"
+                              Command="{Binding OrdersCommand}"
+                              Margin="0,5">
+                        <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                            <materialDesign:PackIcon Kind="InvoiceListOutline"
+                                                     Width="22" Height="22"
+                                                     VerticalAlignment="Center"
+                                                     Foreground="White"/>
+                            <TextBlock Text="Orders"
+                                       Foreground="White"
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Menu:Btn>
                 </StackPanel>
-            </Grid>
+            </Border>
 
-            <!-- Content Area -->
-            <Grid Grid.Column="1" Background="White">
-                <ContentControl 
-                  Content="{Binding CurrentView}"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Margin="0"/>
-               
+            <!-- ✅ Main Content -->
+            <Grid Grid.Column="1" Background="White" Margin="0,0,0,0">
+                <ContentControl Content="{Binding CurrentView}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"/>
             </Grid>
-
-           
         </Grid>
-        
     </Grid>
 </Window>
