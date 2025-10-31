@@ -29,10 +29,10 @@ namespace RetailManagementSystem.ViewModels
             Orders = new ObservableCollection<OrderDetailsDto>();
 
             // Initialize services
-            var dbContext = new RetailDbContext();
+           
             _customerService = new CustomerService();
             _productService = new ProductService();
-            _orderRepository = new OrderRepository(dbContext);
+            _orderRepository =OrderRepository.Create();
 
             // Initialize commands
             ShowWindowCommand = new RelayCommand(_ => ShowAddOrderWindow());

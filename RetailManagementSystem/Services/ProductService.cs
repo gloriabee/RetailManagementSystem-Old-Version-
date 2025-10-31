@@ -119,9 +119,9 @@ namespace RetailManagementSystem.Services
         }
 
         // ွGet Top Products
-        public List<TopCategoryDto> GetTopCustomers(int count)
+        public List<TopCategoryDto> GetTopCategories(int count)
         {
-            var topCustomers = _context.Products
+            var topCategories = _context.Products
                 .GroupBy(p=> p.Category)
                 .Select(g=> new TopCategoryDto
                 {
@@ -134,7 +134,7 @@ namespace RetailManagementSystem.Services
         .Take(count)
         .ToList();
 
-            return topCustomers;
+            return topCategories;
         }
     }
 }

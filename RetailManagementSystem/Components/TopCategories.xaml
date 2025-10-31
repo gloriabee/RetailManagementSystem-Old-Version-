@@ -30,7 +30,9 @@
                            Margin="0,0,0,10" />
 
                 <Grid Width="Auto" Height="300" Grid.Row="1">
-                    <lvc:CartesianChart Series="{Binding seriescollection}" LegendLocation="Bottom">
+                    <lvc:CartesianChart 
+                        Series="{Binding seriescollection}"
+                        LegendLocation="Bottom">
                         <lvc:CartesianChart.AxisX>
                             <lvc:Axis 
                                   LabelFormatter="{Binding formatter}"
@@ -44,6 +46,7 @@
                             <lvc:Axis Labels="{Binding labels}"></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
+
                 </Grid>
 
                    

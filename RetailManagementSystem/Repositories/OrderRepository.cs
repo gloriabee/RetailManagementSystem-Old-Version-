@@ -12,9 +12,15 @@ namespace RetailManagementSystem
     public class OrderRepository : IOrderRepository
     {
         private readonly RetailDbContext _context;
-        public OrderRepository(RetailDbContext context)
+        private OrderRepository(RetailDbContext context)
         {
             _context = context;
+        }
+
+        public static OrderRepository Create()
+        {
+            var context= new RetailDbContext();
+            return new OrderRepository(context);
         }
 
         public void Add(Order order)

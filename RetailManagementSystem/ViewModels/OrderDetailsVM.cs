@@ -37,7 +37,7 @@ namespace RetailManagementSystem.ViewModels
             Order = order;
 
             var dbContext = new RetailDbContext();
-            _orderRepository = new OrderRepository(dbContext);
+            _orderRepository = OrderRepository.Create();
 
             LoadOrderedProducts(order.OrderId);
         }

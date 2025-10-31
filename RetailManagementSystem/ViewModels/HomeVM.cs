@@ -35,10 +35,10 @@ namespace RetailManagementSystem.ViewModels
 
         public HomeVM()
         {
-            var dbContext = new RetailDbContext();
+          
             _productService = new ProductService();
             _customerService = new CustomerService();
-            _orderRepository = new OrderRepository(dbContext);
+            _orderRepository = OrderRepository.Create();
             totalProducts = _productService.GetProductsCount();
             totalCustomers= _customerService.GetCustomersCount();
             totalOrders=_orderRepository.GetAllOrders().Count;
@@ -49,7 +49,7 @@ namespace RetailManagementSystem.ViewModels
 
 
             // Top 5 categories by products (chart)
-            var topCategories = _productService.GetTopCustomers(5); // you can rename this to GetTopCategories()
+            var topCategories = _productService.GetTopCategories(5); 
             LoadTopCategoriesChart(topCategories);
 
 
@@ -58,6 +58,8 @@ namespace RetailManagementSystem.ViewModels
             OnPropertyChanged(nameof(totalOrders));
             OnPropertyChanged(nameof(totalRevenue));
             OnPropertyChanged(nameof(TopCustomers));
+
+            // Chart Design
             OnPropertyChanged(nameof(seriescollection));
             OnPropertyChanged(nameof(labels));
             OnPropertyChanged(nameof(formatter));
