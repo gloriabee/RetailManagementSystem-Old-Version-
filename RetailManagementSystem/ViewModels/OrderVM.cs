@@ -21,6 +21,7 @@ namespace RetailManagementSystem.ViewModels
         public OrderVM()
         {
            
+           
 
             // Initialize collections
             CustomerIds = new ObservableCollection<int>();
@@ -158,6 +159,7 @@ namespace RetailManagementSystem.ViewModels
         {
             var allOrders = _orderRepository?.GetAllOrders() ?? new List<OrderDetailsDto>();
             Orders = new ObservableCollection<OrderDetailsDto>(allOrders);
+            OnPropertyChanged(nameof(Orders));
         }
 
         
