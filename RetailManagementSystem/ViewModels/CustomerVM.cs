@@ -1,214 +1,146 @@
-﻿using System;
+﻿using RetailManagementSystem.Components;
+using RetailManagementSystem.DTOs;
+using RetailManagementSystem.Interfaces;
+using RetailManagementSystem.Models;
+using RetailManagementSystem.Repositories;
+using RetailManagementSystem.Views;
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using RetailManagementSystem.DTOs;
-using RetailManagementSystem.Models;
-using RetailManagementSystem.Services;
-using RetailManagementSystem.Views;
+using Wpf.Ui.Input;
 
 namespace RetailManagementSystem.ViewModels
 {
     public class CustomerVM : ViewModelBase
     {
-        private readonly CustomerService _customerService;
+        private readonly UnitOfWork _unitOfWork;
+        public PaginationVM Pagination { get; set; } = new PaginationVM();
 
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public string Country { get; set; }
-
-       
-
-
-        public CustomerVM()
-        {
-            _customerService = new CustomerService();
-            MyCustomers = new ObservableCollection<Customer>();
-            //TopCustomers= new ObservableCollection<TopCustomerDto>();
-
-            // Initialize commands
-            FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => CurrentPage > 1);
-            LastPageCommand = new RelayCommand(_ => GoToLastPage(), _ => CurrentPage < TotalPages);
-            NextPageCommand = new RelayCommand(_ => GoToNextPage(), _ => CurrentPage < TotalPages);
-            PrevPageCommand = new RelayCommand(_ => GoToPrevPage(), _ => CurrentPage > 1);
-            ChangePageSizeCommand = new RelayCommand(param =>
-            {
-                if (int.TryParse(param?.ToString(), out int newSize))
-                {
-                    PageSize = newSize;
-                    CurrentPage = 1;
-                    LoadCustomers();
-                }
-            });
-            RefreshCommand = new RelayCommand(_ => LoadCustomers());
-            ShowWindowCommand = new RelayCommand(_ => ShowAddCustomerWindow());
-            AddCustomerCommand = new RelayCommand(AddCustomer);
-            UpdateCommand = new RelayCommand(UpdateCustomer);
-            DeleteCommand = new RelayCommand(DeleteCustomer);
-            DeleteAllCommand = new RelayCommand(_ => DeleteSelectedCustomers());
-            LoadCustomers();
-            //LoadTopCustomers();
-        }
-
-        // Observable collection bound to DataGrid
-        private ObservableCollection<Customer> _myCustomers;
-        public ObservableCollection<Customer> MyCustomers
-        {
-            get => _myCustomers;
-            set { _myCustomers = value; OnPropertyChanged(); }
-        }
-
-        // Filter text (auto-refresh when changed)
         private string _filterText;
         public string FilterText
         {
             get => _filterText;
             set
             {
-                if (_filterText != value)
-                {
-                    _filterText = value;
-                    OnPropertyChanged();
-                    CurrentPage = 1; // Reset to first page on new search
-                    LoadCustomers();
-                }
+                _filterText = value;
+                OnPropertyChanged(nameof(FilterText));
+                _ = LoadPagedCustomersAsync();
             }
         }
 
-        // Pagination fields
-        private int _currentPage = 1;
-        public int CurrentPage
+        public ObservableCollection<Customer> Customers { get; set; } = new ObservableCollection<Customer>();
+
+        // Fields for input/edit
+        private string _username;
+        public string Username
         {
-            get => _currentPage;
-            set
-            {
-                if (_currentPage != value)
-                {
-                    _currentPage = value;
-                    OnPropertyChanged();
-                    LoadCustomers();
-                }
-            }
+            get => _username;
+            set { _username = value; OnPropertyChanged(nameof(Username)); }
         }
 
-        private int _pageSize = 10;
-        public int PageSize
+        private string _email;
+        public string Email
         {
-            get => _pageSize;
-            set { _pageSize = value; OnPropertyChanged(); }
+            get => _email;
+            set { _email = value; OnPropertyChanged(nameof(Email)); }
         }
 
-        private int _totalCount;
-        public int TotalCount
+        private string _phone;
+        public string Phone
         {
-            get => _totalCount;
-            set
-            {
-                _totalCount = value;
-                OnPropertyChanged(nameof(TotalPages));
-            }
+            get => _phone;
+            set { _phone = value; OnPropertyChanged(nameof(Phone)); }
         }
 
-        private bool _isSelected;
-        public bool IsSelected
+        private string _address;
+        public string Address
         {
-            get => _isSelected;
-            set { _isSelected = value; OnPropertyChanged(nameof(IsSelected)); }
+            get => _address;
+            set { _address = value; OnPropertyChanged(nameof(Address)); }
         }
 
-        private bool _allSelected;
-        public bool AllSelected
+        private string _country;
+        public string Country
         {
-            get => _allSelected;
-            set
-            {
-                _allSelected = value;
-                OnPropertyChanged(nameof(AllSelected));
-                SelectAllRows(_allSelected);
-            }
+            get => _country;
+            set { _country = value; OnPropertyChanged(nameof(Country)); }
         }
 
-        public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+        public Customer SelectedCustomer { get; set; }
 
-        public ICommand FirstPageCommand { get; }
-        public ICommand NextPageCommand { get; }
-        public ICommand PrevPageCommand { get; }
-        public ICommand LastPageCommand { get; }
+        // Commands
 
-        public ICommand ChangePageSizeCommand { get; }
-        public ICommand RefreshCommand { get; }
         public ICommand ShowWindowCommand { get; }
-
         public ICommand AddCustomerCommand { get; }
+        public ICommand EditCustomerCommand { get; }
+        public ICommand DeleteCustomerCommand { get; }
+        public ICommand RefreshCommand { get; }
 
-        public ICommand UpdateCommand { get; }
-        public ICommand DeleteCommand { get; }
+        public CustomerVM()
+        {
+            _unitOfWork = new UnitOfWork(new RetailDbContext());
 
-        public ICommand DeleteAllCommand { get; }
+            ShowWindowCommand = new RelayCommand(_ => ShowAddOrderWindow());
+            AddCustomerCommand = new RelayCommand(async _ => await AddCustomerAsync());
+            EditCustomerCommand = new RelayCommand(async _ => await EditCustomerAsync(), _ => SelectedCustomer != null);
+            DeleteCustomerCommand = new RelayCommand(async _ => await DeleteCustomerAsync(), _ => SelectedCustomer != null);
+            RefreshCommand = new RelayCommand(async _ => await LoadPagedCustomersAsync());
 
-        // Load data from CustomerService
-        private void LoadCustomers()
+            Pagination.PropertyChanged += async (s, e) =>
+            {
+                if (e.PropertyName == nameof(Pagination.CurrentPage) || e.PropertyName == nameof(Pagination.PageSize))
+                    await LoadPagedCustomersAsync();
+            };
+
+            _ = LoadPagedCustomersAsync();
+        }
+
+        private void ShowAddOrderWindow()
         {
             try
             {
-                var customers = _customerService.GetPagedCustomers(FilterText, CurrentPage, PageSize);
-                TotalCount = _customerService.GetTotalCount(FilterText);
-
-                MyCustomers.Clear();
-                foreach (var customer in customers)
-                    MyCustomers.Add(customer);
+                var addWindow = new AddCustomer { DataContext = this };
+                addWindow.ShowDialog();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading customers: {ex.Message}");
+                MessageBox.Show($"Error opening Add Order window: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void GoToFirstPage()
-        {
-
-            CurrentPage = 1;
-        }
-
-
-        private void GoToNextPage()
-        {
-            if (CurrentPage < TotalPages)
-                CurrentPage++;
-        }
-
-        private void GoToPrevPage()
-        {
-            if (CurrentPage > 1)
-                CurrentPage--;
-        }
-
-        private void GoToLastPage()
-        {
-            CurrentPage = TotalPages;
-        }
-
-        private void ShowAddCustomerWindow()
-        {
-
-            var addWindow = new AddCustomer
-            {
-                DataContext = this
-            };
-
-            addWindow.ShowDialog();
-
-        }
-
-        private void AddCustomer(object parameter)
+        private async Task LoadPagedCustomersAsync()
         {
             try
             {
-                var customer = new Customer
+                var (pagedCustomers, totalCount) = await _unitOfWork.Customers.GetPagedCustomersAsync(
+                    Pagination.CurrentPage,
+                    Pagination.PageSize,
+                    FilterText
+                );
+
+                Customers = new ObservableCollection<Customer>(pagedCustomers);
+                Pagination.TotalCount = totalCount;
+                OnPropertyChanged(nameof(Customers));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading customers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task AddCustomerAsync()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(Username))
+                {
+                    MessageBox.Show("Username is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var newCustomer = new Customer
                 {
                     Username = Username,
                     Email = Email,
@@ -217,138 +149,82 @@ namespace RetailManagementSystem.ViewModels
                     Country = Country
                 };
 
-                _customerService.Add(customer);
+                await _unitOfWork.Customers.AddAsync(newCustomer);
+                _unitOfWork.Complete();
 
-                // Clear form fields
-                Username = string.Empty;
-                Email = string.Empty;
-                Phone = string.Empty;
-                Address = string.Empty;
-                Country = string.Empty;
+                ClearInputs();
+                await LoadPagedCustomersAsync();
 
-                OnPropertyChanged(nameof(Username));
-                OnPropertyChanged(nameof(Email));
-                OnPropertyChanged(nameof(Phone));
-                OnPropertyChanged(nameof(Address));
-                OnPropertyChanged(nameof(Country));
-
-
-
-                // Refresh customer list
-                LoadCustomers();
-
-                // Show success message
-                MessageBox.Show("Customer added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Customer added successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show("Failed to add customer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-        }
-
-        private void UpdateCustomer(object parameter)
-        {
-            if (parameter is not Customer customer)
-                return;
-
-            // Create an edit VM with existing values
-            var editVM = new CustomerVM
-            {
-                Id = customer.Id,
-                Username = customer.Username,
-                Email = customer.Email,
-                Phone = customer.Phone,
-                Address = customer.Address,
-                Country = customer.Country
-            };
-
-            // Set it as the DataContext for the edit window
-            var editWindow = new EditCustomer
-            {
-                DataContext = editVM
-            };
-
-            if (editWindow.ShowDialog() == true)
-            {
-                customer.Id = editVM.Id;
-                customer.Username = editVM.Username;
-                customer.Email = editVM.Email;
-                customer.Phone = editVM.Phone;
-                customer.Address = editVM.Address;
-                customer.Country = editVM.Country;
-
-                try
-                {
-
-                    _customerService.Update(customer);
-                    MessageBox.Show("Customer updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadCustomers();
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error updating customer: {ex.Message}");
-                }
+                MessageBox.Show($"Error adding customer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-
-        private void DeleteCustomer(object parameter)
+        private async Task EditCustomerAsync()
         {
-            if (parameter is Customer customer)
+            if (SelectedCustomer == null)
             {
-                var result = MessageBox.Show($"Are you sure to delete {customer.Username}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        _customerService.Delete(customer.Id);
-                        LoadCustomers();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error deleting customer: {ex.Message}");
-                    }
-                }
-            }
-        }
-
-
-        private void DeleteSelectedCustomers()
-        {
-            var selectedCustomers = MyCustomers.Where(c => c.IsSelected).ToList();
-            if (!selectedCustomers.Any())
-            {
-                MessageBox.Show("No customers selected.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please select a customer to edit.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            var result = MessageBox.Show($"Are you sure to delete {selectedCustomers.Count} selected customers?",
-                "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes)
+
+            try
+            {
+                SelectedCustomer.Username = Username ?? SelectedCustomer.Username;
+                SelectedCustomer.Email = Email ?? SelectedCustomer.Email;
+                SelectedCustomer.Phone = Phone ?? SelectedCustomer.Phone;
+                SelectedCustomer.Address = Address ?? SelectedCustomer.Address;
+                SelectedCustomer.Country = Country ?? SelectedCustomer.Country;
+
+                await _unitOfWork.Customers.UpdateAsync(SelectedCustomer);
+                _unitOfWork.Complete();
+
+                await LoadPagedCustomersAsync();
+                MessageBox.Show("Customer updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating customer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task DeleteCustomerAsync()
+        {
+            if (SelectedCustomer == null)
+            {
+                MessageBox.Show("Please select a customer to delete.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var confirm = MessageBox.Show($"Are you sure you want to delete '{SelectedCustomer.Username}'?",
+                "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (confirm == MessageBoxResult.Yes)
             {
                 try
                 {
-                    foreach (var c in selectedCustomers)
-                    {
-                        _customerService.Delete(c.Id);
-
-                    }
-
-                    LoadCustomers();
+                    await _unitOfWork.Customers.DeleteAsync(SelectedCustomer);
+                    _unitOfWork.Complete();
+                    await LoadPagedCustomersAsync();
+                    MessageBox.Show("Customer deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error deleting customers: {ex.Message}");
+                    MessageBox.Show($"Error deleting customer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
-        public void SelectAllRows(bool select)
+        private void ClearInputs()
         {
-            foreach (var c in MyCustomers)
-                c.IsSelected = select;
+            Username = string.Empty;
+            Email = string.Empty;
+            Phone = string.Empty;
+            Address = string.Empty;
+            Country = string.Empty;
         }
     }
 }

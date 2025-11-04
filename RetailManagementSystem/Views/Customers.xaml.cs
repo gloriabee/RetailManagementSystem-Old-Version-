@@ -11,20 +11,20 @@ namespace RetailManagementSystem.Views
             InitializeComponent();
         }
 
-        private void HeaderCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            if(DataContext is CustomerVM vm)
-            {
-                vm.SelectAllRows(true);
-            }
-        }
+        //private void HeaderCheckBox_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    if(DataContext is CustomerVM vm)
+        //    {
+        //        vm.SelectAllRows(true);
+        //    }
+        //}
 
-        private void HeaderCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is CustomerVM vm)
-            {
-                vm.SelectAllRows(false);
-            }
-        }
+        //private void HeaderCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        //{
+        //    if (DataContext is CustomerVM vm)
+        //    {
+        //        vm.SelectAllRows(false);
+        //    }
+        //}
     }
 }
