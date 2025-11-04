@@ -12,7 +12,7 @@ namespace RetailManagementSystem
     public class OrderRepository : IOrderRepository
     {
         private readonly RetailDbContext _context;
-        private OrderRepository(RetailDbContext context)
+        public OrderRepository(RetailDbContext context)
         {
             _context = context;
         }

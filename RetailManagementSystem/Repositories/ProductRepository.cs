@@ -9,36 +9,43 @@ using System.Threading.Tasks;
 
 namespace RetailManagementSystem.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
-        public Task<List<Product>> GetPagedProductsAsync(string? filter, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public ProductRepository(RetailDbContext context) : base(context)
+        {
+
+        }
+
+        public Task<(List<Product> products, int TotalCount)> GetPagedProductsAsync(int pageNumber, int pageSize, string? filter)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<int>> GetProductIdsAsync(CancellationToken cancellationToken = default)
+        public Task<List<int>> GetProductIdsAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> GetProductNameByIdAsync(int productId, CancellationToken cancellationToken = default)
+        public Task<string?> GetProductNameByIdAsync(int productId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<decimal> GetProductPriceByIdAsync(int productId, CancellationToken cancellationToken = default)
+        public Task<decimal> GetProductPriceByIdAsync(int productId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<TopCategoryDto>> GetTopCategoriesAsync(int count, CancellationToken cancellationToken = default)
+        public Task<int> GetProductsCountAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> GetTotalCountAsync(string? filter, CancellationToken cancellationToken = default)
+        public Task<List<TopCategoryDto>> GetTopCategoriesAsync(int count)
         {
             throw new NotImplementedException();
         }
     }
+
+
 }

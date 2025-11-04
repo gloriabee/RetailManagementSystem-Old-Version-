@@ -54,31 +54,6 @@ namespace RetailManagementSystem.ViewModels
             //LoadTopCustomers();
         }
 
-        //private void LoadTopCustomers()
-        //{
-        //    try
-        //    {
-        //        var topCustomers = _customerService.GetTopCustomers(5);
-
-        //        if (TopCustomers == null)
-        //            TopCustomers = new ObservableCollection<TopCustomerDto>();
-        //        else
-        //            TopCustomers.Clear();
-
-        //        foreach (var c in topCustomers)
-        //            TopCustomers.Add(c);
-
-        //        OnPropertyChanged(nameof(TopCustomers));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Error loading top customers: {ex.Message}");
-        //    }
-        //}
-
-
-
-
         // Observable collection bound to DataGrid
         private ObservableCollection<Customer> _myCustomers;
         public ObservableCollection<Customer> MyCustomers
@@ -158,15 +133,6 @@ namespace RetailManagementSystem.ViewModels
         }
 
         public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
-
-        //private ObservableCollection<TopCustomerDto> _topCustomers;
-        //public ObservableCollection<TopCustomerDto> TopCustomers
-        //{
-        //    get => _topCustomers;
-        //    set { _topCustomers = value; OnPropertyChanged(); }
-        //}
-
-        // Commands
 
         public ICommand FirstPageCommand { get; }
         public ICommand NextPageCommand { get; }

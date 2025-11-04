@@ -9,10 +9,10 @@ namespace RetailManagementSystem.Interfaces
 {
     public interface IUnitOfWork:IDisposable
     {
-        IRepository<Product> Products { get; }
-        IRepository<Customer> Customers { get; }
-        IRepository<Order> Orders { get; }
-        Task<int> CompleteAsync(CancellationToken cancellationToken);
-        
+      ICustomerRepository Customers { get; }
+      IProductRepository Products { get; }
+      IOrderRepository Orders { get; }
+      int Complete();
+      
     }
 }

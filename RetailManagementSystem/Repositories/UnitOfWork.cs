@@ -9,29 +9,30 @@ using System.Threading.Tasks;
 
 namespace RetailManagementSystem.Repositories
 {
-    public class UnitOfWork:IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
-        private readonly RetailDbContext _dbContext;
-        public UnitOfWork(RetailDbContext dbContext)
+        private readonly RetailDbContext _context;
+        public UnitOfWork(RetailDbContext context)
         {
-            _dbContext = dbContext;
-            Products= new Repository<Product>(_dbContext);
-            Customers= new Repository<Customer>(_dbContext);
-            Orders= new Repository<Order>(_dbContext);
+            _context = context;
+            Customers= new CustomerRepository(_context);
+            Products= new ProductRepository(_context);
+            Orders= new OrderRepository(_context);
         }
+        public ICustomerRepository Customers { get; private set; }
 
-        public IRepository<Product> Products { get; }
-        public IRepository<Customer> Customers { get; }
-        public IRepository<Order> Orders { get; }
+        public IProductRepository Products { get; private set; }
 
-        public async Task<int> CompleteAsync(CancellationToken cancellationToken)
+        public IOrderRepository Orders { get; private set; }
+
+        public int Complete()
         {
-            return await _dbContext.SaveChangesAsync(cancellationToken);
+            return _context.SaveChanges();
         }
 
         public void Dispose()
         {
-            _dbContext.Dispose();
+           _context.Dispose();
         }
     }
 }

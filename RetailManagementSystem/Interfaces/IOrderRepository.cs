@@ -10,7 +10,9 @@ namespace RetailManagementSystem.Interfaces
 {
     public interface IOrderRepository
     {
-        void Add(Order order);
+        void Add(Order order); //move to generic repository
+
+        
         void AddDetails(OrderDetail details);
         List<Order> GetOrderByCreatedBy(string createdBy);
         List<OrderDetailsDto> GetAllOrders();

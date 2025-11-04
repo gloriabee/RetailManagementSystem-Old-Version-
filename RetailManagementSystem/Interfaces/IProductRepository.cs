@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 
 namespace RetailManagementSystem.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductRepository:IGenericRepository<Product>
     {
-        Task<List<Product>> GetPagedProductsAsync(string? filter, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
-        Task<int> GetTotalCountAsync(string? filter, CancellationToken cancellationToken = default);
-        Task<List<int>> GetProductIdsAsync(CancellationToken cancellationToken = default);
-        Task<string> GetProductNameByIdAsync(int productId, CancellationToken cancellationToken = default);
-        Task<decimal> GetProductPriceByIdAsync(int productId, CancellationToken cancellationToken = default);
-        Task<List<TopCategoryDto>> GetTopCategoriesAsync(int count, CancellationToken cancellationToken = default);
+        Task<int> GetProductsCountAsync();
+        Task<List<int>> GetProductIdsAsync();
+        Task<string?> GetProductNameByIdAsync(int productId);
+        Task<decimal> GetProductPriceByIdAsync(int productId);
+        Task<List<TopCategoryDto>> GetTopCategoriesAsync(int count);
+        Task<(List<Product> products, int TotalCount)>
+            GetPagedProductsAsync
+            (int pageNumber, int pageSize, string? filter);
     }
 }
