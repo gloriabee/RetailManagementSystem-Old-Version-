@@ -57,6 +57,15 @@ namespace RetailManagementSystem
             return ordersWithCustomerInfo;
         }
 
+        public List<Order> GetOrderByCreatedBy(string createdBy)
+        {
+           var orders= _context.Orders
+                .Where(o => o.CreatedBy == createdBy)
+                .ToList();
+
+            return orders;
+        }
+
         public List<OrderProductDto> GetOrderProducts(int orderId)
         {
             var products = _context.OrderDetails
@@ -74,6 +83,42 @@ namespace RetailManagementSystem
                     }
                 ).ToList();
             return products;
+        }
+
+        public List<OrderDetailsDto> GetPagedOrders(int pageNumber, int pageSize, string? filter, out int totalCount)
+        {
+            var orders = _context.Orders
+                 .Join(_context.Customers,
+                 o => o.CustomerId,
+                 c => c.Id,
+                 (o, c) => new OrderDetailsDto
+                 {
+                     OrderId = o.Id,
+                     OrderDate = o.OrderDate,
+                     Subtotal = o.TotalAmount,
+                     CustomerName = c.Username,
+                     Email = c.Email,
+                     Phone = c.Phone,
+                     Address = c.Address,
+                     Country = c.Country
+                 });
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                orders= orders.Where(o => o.CustomerName.Contains(filter) || o.OrderId.ToString().Contains(filter));
+            }
+
+              totalCount= orders.Count();
+
+            var pagedOrders= orders.
+                OrderBy(o=>o.OrderId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return pagedOrders;
+
+
         }
     }
 }

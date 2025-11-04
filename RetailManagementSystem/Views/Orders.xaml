@@ -81,7 +81,7 @@
         <components:GridTable Grid.Row="2" ItemsSource="{Binding Orders}"/>
 
         <!-- Pagination footer -->
-        <components:Pagination Grid.Row="3" Margin="0,10,0,0"/>
+        <components:Pagination Grid.Row="3" Margin="0,10,0,0" DataContext="{Binding Pagination}"/>
 
 
     </Grid>

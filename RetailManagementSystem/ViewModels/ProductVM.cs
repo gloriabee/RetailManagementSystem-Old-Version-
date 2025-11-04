@@ -23,7 +23,7 @@ namespace RetailManagementSystem.ViewModels
         public string Category { get; set; }
         public decimal Price { get; set; }
         public string Description { get; set; }
-       
+
 
 
         public ProductVM()
@@ -40,7 +40,7 @@ namespace RetailManagementSystem.ViewModels
             _productService = new ProductService();
             MyProducts = new ObservableCollection<Product>();
 
-        
+
 
             // Initialize commands
             FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => CurrentPage > 1);
@@ -336,9 +336,9 @@ namespace RetailManagementSystem.ViewModels
                 p.IsSelected = select;
         }
 
-        
 
 
-            
+
+
     }
 }

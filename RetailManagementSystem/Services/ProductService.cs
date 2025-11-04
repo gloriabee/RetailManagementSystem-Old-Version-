@@ -65,7 +65,7 @@ namespace RetailManagementSystem.Services
             _context.Products.Add(product);
             _context.SaveChanges();
         }
-        
+
 
         // Update product
         public void Update(Product product)
@@ -122,11 +122,11 @@ namespace RetailManagementSystem.Services
         public List<TopCategoryDto> GetTopCategories(int count)
         {
             var topCategories = _context.Products
-                .GroupBy(p=> p.Category)
-                .Select(g=> new TopCategoryDto
+                .GroupBy(p => p.Category)
+                .Select(g => new TopCategoryDto
                 {
-                        Category=g.Key,
-                        TotalProducts= g.Count()
+                    Category = g.Key,
+                    TotalProducts = g.Count()
 
                 }
                 )

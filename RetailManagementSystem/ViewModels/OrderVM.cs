@@ -18,11 +18,23 @@ namespace RetailManagementSystem.ViewModels
         private readonly ProductService _productService;
         private readonly OrderRepository _orderRepository;
 
+        public PaginationVM Pagination { get; set; } = new PaginationVM();
+        private string _filterText;
+        public string FilterText
+        {
+            get => _filterText;
+            set
+            {
+                _filterText = value;
+                OnPropertyChanged(nameof(FilterText));
+                loadPagedOrders();
+            }
+        }
+
+       
+
         public OrderVM()
         {
-           
-           
-
             // Initialize collections
             CustomerIds = new ObservableCollection<int>();
             ProductIds = new ObservableCollection<int>();
@@ -45,7 +57,13 @@ namespace RetailManagementSystem.ViewModels
                 ShowDetailsScreen(orderCustomer);
             });
 
-
+            Pagination.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(Pagination.CurrentPage) || e.PropertyName == nameof(Pagination.PageSize))
+                {
+                    loadPagedOrders();
+                }
+            };
 
 
             // Load data safely
@@ -53,6 +71,8 @@ namespace RetailManagementSystem.ViewModels
 
             AddProduct();
         }
+
+        
 
         private void ShowDetailsScreen(OrderDetailsDto order)
         {
@@ -83,7 +103,7 @@ namespace RetailManagementSystem.ViewModels
             try
             {
                 LoadCustomerIds();
-                LoadOrders();
+                loadPagedOrders();
             }
             catch (Exception ex)
             {
@@ -155,14 +175,21 @@ namespace RetailManagementSystem.ViewModels
         }
 
 
-        private void LoadOrders()
+
+        private void loadPagedOrders()
         {
-            var allOrders = _orderRepository?.GetAllOrders() ?? new List<OrderDetailsDto>();
-            Orders = new ObservableCollection<OrderDetailsDto>(allOrders);
+            int totalCount;
+            var pagedOrders = _orderRepository.GetPagedOrders(
+                Pagination.CurrentPage,
+                Pagination.PageSize, 
+                FilterText,
+                out totalCount
+            );
+
+            Pagination.TotalCount= totalCount;
+            Orders= new ObservableCollection<OrderDetailsDto>(pagedOrders);
             OnPropertyChanged(nameof(Orders));
         }
-
-        
 
         private void AddOrder(object parameter)
         {
@@ -196,7 +223,7 @@ namespace RetailManagementSystem.ViewModels
                 }
 
                 MessageBox.Show("Order added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadOrders();
+                loadPagedOrders();
             }
             catch (Exception e)
             {
