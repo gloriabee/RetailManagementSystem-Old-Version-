@@ -24,7 +24,10 @@
                         <Border
                   Background="Transparent">
                             <CheckBox
-                    IsChecked="{Binding DataContext.IsAllItems1Selected}" />
+                    IsChecked="{Binding DataContext.IsAllItemsSelected,
+                                RelativeSource={RelativeSource AncestorType=UserControl},
+                                Mode=TwoWay,
+                                UpdateSourceTrigger=PropertyChanged}" />
                         </Border>
                     </DataGridCheckBoxColumn.Header>
                     <DataGridCheckBoxColumn.HeaderStyle>
@@ -81,13 +84,21 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 
                                 <Button
-                              Command="{Binding UpdateCommand}"
+                              Command="{Binding 
+                                    RelativeSource={RelativeSource AncestorType=UserControl},
+                                    Path=EditCommand}"
+                              CommandParameter="{Binding}"
                               Content="Edit"
                               Style="{StaticResource MaterialDesignOutlinedLightButton}"
                               Foreground="#111111"
                              Margin="0,0,5,0"
                           />
                                 <Button
+                               Command="{Binding
+                                    RelativeSource={RelativeSource AncestorType=UserControl},
+                                    Path=DeleteCommand
+                                    }"
+                               CommandParameter="{Binding}"
                                Content="Delete"
                                Style="{StaticResource MaterialDesignOutlinedLightButton}"
                                Foreground="#c42c52"

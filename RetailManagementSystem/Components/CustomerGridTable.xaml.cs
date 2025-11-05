@@ -36,5 +36,32 @@ namespace RetailManagementSystem.Components
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(CustomerGridTable), new PropertyMetadata(null));
 
+
+
+        public ICommand EditCommand
+        {
+            get { return (ICommand)GetValue(EditCommandProperty); }
+            set { SetValue(EditCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for EditCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty EditCommandProperty =
+            DependencyProperty.Register("EditCommand", typeof(ICommand), typeof(CustomerGridTable), new PropertyMetadata(null));
+
+
+
+        public ICommand DeleteCommand
+        {
+            get { return (ICommand)GetValue(DeleteCommandProperty); }
+            set { SetValue(DeleteCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DeleteCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DeleteCommandProperty =
+            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(CustomerGridTable), new PropertyMetadata(null));
+
+
+
+
     }
 }

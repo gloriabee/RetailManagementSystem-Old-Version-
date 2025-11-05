@@ -33,6 +33,13 @@ namespace RetailManagementSystem.ViewModels
         public ObservableCollection<Customer> Customers { get; set; } = new ObservableCollection<Customer>();
 
         // Fields for input/edit
+        private int _id;
+        public int Id
+        {
+            get => _id;
+            set { _id = value; OnPropertyChanged(nameof(Id)); }
+        }
+
         private string _username;
         public string Username
         {
@@ -68,14 +75,45 @@ namespace RetailManagementSystem.ViewModels
             set { _country = value; OnPropertyChanged(nameof(Country)); }
         }
 
-        public Customer SelectedCustomer { get; set; }
+        private Customer _selectedCustomer;
+        public Customer SelectedCustomer
+        {
+            get => _selectedCustomer;
+            set
+            {
+                _selectedCustomer = value;
+                OnPropertyChanged(nameof(SelectedCustomer));
+            }
+        }
+
+        private bool _isAllItemsSelected;
+        public bool IsAllItemsSelected
+        {
+            get => _isAllItemsSelected;
+            set
+            {
+                if (_isAllItemsSelected != value)
+                {
+                    _isAllItemsSelected= value;
+                    OnPropertyChanged(nameof(IsAllItemsSelected));
+
+                    foreach (var customer in Customers)
+                    {
+                        customer.IsSelected = value;
+                    }
+                }
+              
+            }
+        }
 
         // Commands
 
         public ICommand ShowWindowCommand { get; }
         public ICommand AddCustomerCommand { get; }
-        public ICommand UpdateCommand { get; }
-        public ICommand DeleteCustomerCommand { get; }
+        public ICommand EditCommand { get; }
+        public ICommand SaveCommand {  get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand MultipleDeleteCommand { get; }
         public ICommand RefreshCommand { get; }
 
         public CustomerVM()
@@ -84,8 +122,10 @@ namespace RetailManagementSystem.ViewModels
 
             ShowWindowCommand = new RelayCommand(_ => ShowAddCustomerWindow());
             AddCustomerCommand = new RelayCommand(async param => await AddCustomerAsync(param));
-            UpdateCommand = new RelayCommand(async param => await EditCustomerAsync(param), _ => SelectedCustomer != null);
-            DeleteCustomerCommand = new RelayCommand(async _ => await DeleteCustomerAsync(), _ => SelectedCustomer != null);
+            EditCommand = new RelayCommand(async param => await ShowEditCustomerWindow(param));
+            SaveCommand = new RelayCommand(async param => await EditCustomerAsync(param));
+            DeleteCommand = new RelayCommand(async param => await DeleteCustomerAsync(param));
+            MultipleDeleteCommand = new RelayCommand(async _ => await DeleteSelectedCustomerAsync(), _ => Customers.Any(c => c.IsSelected));
             RefreshCommand = new RelayCommand(async _ => await LoadPagedCustomersAsync());
 
             Pagination.PropertyChanged += async (s, e) =>
@@ -95,6 +135,43 @@ namespace RetailManagementSystem.ViewModels
             };
 
             _ = LoadPagedCustomersAsync();
+        }
+
+        private async Task DeleteSelectedCustomerAsync()
+        {
+            var selectedCustomers = Customers.Where(c => c.IsSelected).ToList();
+
+            if(!selectedCustomers.Any())
+            {
+                MessageBox.Show("No Customers selected", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Are you sure to delete {selectedCustomers.Count} selected customers?",
+                "Confirm Delete",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning
+                );
+
+            if(result == MessageBoxResult.Yes) return;
+
+            try
+            {
+                foreach(var c in selectedCustomers)
+                {
+                    await _unitOfWork.Customers.DeleteAsync(c);
+                }
+
+                _unitOfWork.Complete();
+                await LoadPagedCustomersAsync();
+
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error deleting customers: {ex.Message}","Error",MessageBoxButton.OK,MessageBoxImage.Error);
+            }
         }
 
         private void ShowAddCustomerWindow()
@@ -109,6 +186,27 @@ namespace RetailManagementSystem.ViewModels
                 MessageBox.Show($"Error opening Add Order window: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private async Task ShowEditCustomerWindow(object parameter)
+        {
+            if(parameter is not Customer customer)
+                return;
+            var editVM = new CustomerVM
+            {
+                Id = customer.Id,
+                Username = customer.Username,
+                Email =customer.Email,
+                Phone = customer.Phone,
+                Address = customer.Address,
+                Country = customer.Country
+
+            };
+            var editWindow = new EditCustomer { DataContext = editVM };
+            editWindow.ShowDialog();
+
+            await LoadPagedCustomersAsync();
+        }
+
 
         private async Task LoadPagedCustomersAsync()
         {
@@ -165,48 +263,46 @@ namespace RetailManagementSystem.ViewModels
 
         private async Task EditCustomerAsync(object parameter)
         {
-            if (SelectedCustomer == null)
-            {
-                MessageBox.Show("Please select a customer to edit.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+
+                try
+                {
+                var updatedCustomer = new Customer
+                {
+                    Id = Id,
+                    Username = Username,
+                    Email = Email,
+                    Phone = Phone,
+                    Address = Address,
+                    Country = Country
+                };
+                    await _unitOfWork.Customers.UpdateAsync(updatedCustomer);
+                    _unitOfWork.Complete();
+                    MessageBox.Show("Customer updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error updating customer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
+              
+        
 
-            try
-            {
-                SelectedCustomer.Username = Username ?? SelectedCustomer.Username;
-                SelectedCustomer.Email = Email ?? SelectedCustomer.Email;
-                SelectedCustomer.Phone = Phone ?? SelectedCustomer.Phone;
-                SelectedCustomer.Address = Address ?? SelectedCustomer.Address;
-                SelectedCustomer.Country = Country ?? SelectedCustomer.Country;
-
-                await _unitOfWork.Customers.UpdateAsync(SelectedCustomer);
-                _unitOfWork.Complete();
-
-                await LoadPagedCustomersAsync();
-                MessageBox.Show("Customer updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error updating customer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private async Task DeleteCustomerAsync()
+        private async Task DeleteCustomerAsync(object parameter)
         {
-            if (SelectedCustomer == null)
+            if (parameter is not Customer customer)
             {
                 MessageBox.Show("Please select a customer to delete.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var confirm = MessageBox.Show($"Are you sure you want to delete '{SelectedCustomer.Username}'?",
+            var confirm = MessageBox.Show($"Are you sure you want to delete '{customer.Username}'?",
                 "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (confirm == MessageBoxResult.Yes)
             {
                 try
                 {
-                    await _unitOfWork.Customers.DeleteAsync(SelectedCustomer);
+                    await _unitOfWork.Customers.DeleteAsync(customer);
                     _unitOfWork.Complete();
                     await LoadPagedCustomersAsync();
                     MessageBox.Show("Customer deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
