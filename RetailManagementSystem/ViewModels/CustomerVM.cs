@@ -74,7 +74,7 @@ namespace RetailManagementSystem.ViewModels
 
         public ICommand ShowWindowCommand { get; }
         public ICommand AddCustomerCommand { get; }
-        public ICommand EditCustomerCommand { get; }
+        public ICommand UpdateCommand { get; }
         public ICommand DeleteCustomerCommand { get; }
         public ICommand RefreshCommand { get; }
 
@@ -82,9 +82,9 @@ namespace RetailManagementSystem.ViewModels
         {
             _unitOfWork = new UnitOfWork(new RetailDbContext());
 
-            ShowWindowCommand = new RelayCommand(_ => ShowAddOrderWindow());
-            AddCustomerCommand = new RelayCommand(async _ => await AddCustomerAsync());
-            EditCustomerCommand = new RelayCommand(async _ => await EditCustomerAsync(), _ => SelectedCustomer != null);
+            ShowWindowCommand = new RelayCommand(_ => ShowAddCustomerWindow());
+            AddCustomerCommand = new RelayCommand(async param => await AddCustomerAsync(param));
+            UpdateCommand = new RelayCommand(async param => await EditCustomerAsync(param), _ => SelectedCustomer != null);
             DeleteCustomerCommand = new RelayCommand(async _ => await DeleteCustomerAsync(), _ => SelectedCustomer != null);
             RefreshCommand = new RelayCommand(async _ => await LoadPagedCustomersAsync());
 
@@ -97,7 +97,7 @@ namespace RetailManagementSystem.ViewModels
             _ = LoadPagedCustomersAsync();
         }
 
-        private void ShowAddOrderWindow()
+        private void ShowAddCustomerWindow()
         {
             try
             {
@@ -130,7 +130,7 @@ namespace RetailManagementSystem.ViewModels
             }
         }
 
-        private async Task AddCustomerAsync()
+        private async Task AddCustomerAsync(object parameter)
         {
             try
             {
@@ -163,7 +163,7 @@ namespace RetailManagementSystem.ViewModels
             }
         }
 
-        private async Task EditCustomerAsync()
+        private async Task EditCustomerAsync(object parameter)
         {
             if (SelectedCustomer == null)
             {

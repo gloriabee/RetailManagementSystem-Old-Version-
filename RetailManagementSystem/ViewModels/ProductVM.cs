@@ -1,343 +1,234 @@
 ﻿
-
+using RetailManagementSystem.Components;
+using RetailManagementSystem.DTOs;
+using RetailManagementSystem.Interfaces;
 using RetailManagementSystem.Models;
-using RetailManagementSystem.Services;
+using RetailManagementSystem.Repositories;
 using RetailManagementSystem.Views;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
+using Wpf.Ui.Input;
+
 
 namespace RetailManagementSystem.ViewModels
 {
     public class ProductVM : ViewModelBase
     {
-        private readonly ProductService _productService;
+        private readonly UnitOfWork _unitOfWork;
+        public PaginationVM Pagination { get; set; } = new PaginationVM();
 
-        // Product fields
-        public int Id { get; set; }
-        public string ProductName { get; set; }
-        public string Category { get; set; }
-        public decimal Price { get; set; }
-        public string Description { get; set; }
-
-
-
-        public ProductVM()
-        {
-            ProductColumns = new ObservableCollection<DataGridColumn>
-    {
-        new DataGridTextColumn { Header = "ID", Binding = new Binding("Id") },
-        new DataGridTextColumn { Header = "Product Name", Binding = new Binding("ProductName") },
-        new DataGridTextColumn { Header = "Description", Binding = new Binding("Description") },
-        new DataGridTextColumn { Header = "Category", Binding = new Binding("Category") },
-        new DataGridTextColumn { Header = "Price", Binding = new Binding("Price") }
-    };
-
-            _productService = new ProductService();
-            MyProducts = new ObservableCollection<Product>();
-
-
-
-            // Initialize commands
-            FirstPageCommand = new RelayCommand(_ => GoToFirstPage(), _ => CurrentPage > 1);
-            LastPageCommand = new RelayCommand(_ => GoToLastPage(), _ => CurrentPage < TotalPages);
-            NextPageCommand = new RelayCommand(_ => GoToNextPage(), _ => CurrentPage < TotalPages);
-            PrevPageCommand = new RelayCommand(_ => GoToPrevPage(), _ => CurrentPage > 1);
-            ChangePageSizeCommand = new RelayCommand(param =>
-            {
-                if (int.TryParse(param?.ToString(), out int newSize))
-                {
-                    PageSize = newSize;
-                    CurrentPage = 1;
-                    LoadProducts();
-                }
-            });
-
-            RefreshCommand = new RelayCommand(_ => LoadProducts());
-            ShowWindowCommand = new RelayCommand(_ => ShowAddProductWindow());
-            AddProductCommand = new RelayCommand(AddProduct);
-            UpdateCommand = new RelayCommand(UpdateProduct);
-            DeleteCommand = new RelayCommand(DeleteProduct);
-            DeleteAllCommand = new RelayCommand(_ => DeleteSelectedProducts());
-
-            LoadProducts();
-        }
-
-        // Observable collection for DataGrid
-        private ObservableCollection<Product> _myProducts;
-        public ObservableCollection<Product> MyProducts
-        {
-            get => _myProducts;
-            set { _myProducts = value; OnPropertyChanged(); }
-        }
-
-
-        private ObservableCollection<DataGridColumn> _productColumns;
-        public ObservableCollection<DataGridColumn> ProductColumns
-        {
-            get => _productColumns;
-            set
-            {
-                _productColumns = value;
-                OnPropertyChanged();
-            }
-
-        }
-
-        // Filter text
         private string _filterText;
         public string FilterText
         {
             get => _filterText;
             set
             {
-                if (_filterText != value)
-                {
-                    _filterText = value;
-                    OnPropertyChanged();
-                    CurrentPage = 1;
-                    LoadProducts();
-                }
+                _filterText = value;
+                OnPropertyChanged(nameof(FilterText));
+                _ = LoadPagedProductsAsync();
             }
         }
 
-        // Pagination
-        private int _currentPage = 1;
-        public int CurrentPage
+  
+
+        public ObservableCollection<Product> Products { get; set; } = new ObservableCollection<Product>();
+
+        // Fields for input/edit
+        private string _productName;
+        public string ProductName
         {
-            get => _currentPage;
-            set
-            {
-                if (_currentPage != value)
-                {
-                    _currentPage = value;
-                    OnPropertyChanged();
-                    LoadProducts();
-                }
-            }
+            get => _productName;
+            set { _productName = value; OnPropertyChanged(nameof(ProductName)); }
         }
 
-        private int _pageSize = 10;
-        public int PageSize
+
+        private string _productDescription;
+        public string ProductDescription
         {
-            get => _pageSize;
-            set { _pageSize = value; OnPropertyChanged(); }
+            get => _productDescription;
+            set { _productDescription = value; OnPropertyChanged(nameof(ProductDescription)); }
         }
 
-        private int _totalCount;
-        public int TotalCount
+        private string _productCategory;
+        public string ProductCategory
         {
-            get => _totalCount;
-            set
-            {
-                _totalCount = value;
-                OnPropertyChanged(nameof(TotalPages));
-            }
+            get => _productCategory;
+            set { _productCategory = value; OnPropertyChanged(nameof(ProductCategory)); }
         }
 
-        private bool _isSelected;
-        public bool IsSelected
+        private decimal _productPrice;
+        public decimal ProductPrice
         {
-            get => _isSelected;
-            set { _isSelected = value; OnPropertyChanged(nameof(IsSelected)); }
+            get => _productPrice;
+            set { _productPrice = value; OnPropertyChanged(nameof(ProductPrice)); }
         }
 
-        private bool _allSelected;
-        public bool AllSelected
-        {
-            get => _allSelected;
-            set
-            {
-                _allSelected = value;
-                OnPropertyChanged(nameof(AllSelected));
-                SelectAllRows(_allSelected);
-            }
-        }
+        public Product SelectedProduct { get; set; }
 
-        public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
-
-        // Commands
-        public ICommand FirstPageCommand { get; }
-        public ICommand NextPageCommand { get; }
-        public ICommand PrevPageCommand { get; }
-        public ICommand LastPageCommand { get; }
-
-        public ICommand ChangePageSizeCommand { get; }
-        public ICommand RefreshCommand { get; }
+        // Commands 
         public ICommand ShowWindowCommand { get; }
-
         public ICommand AddProductCommand { get; }
-        public ICommand UpdateCommand { get; }
-        public ICommand DeleteCommand { get; }
-        public ICommand DeleteAllCommand { get; }
+        public ICommand EditProductCommand { get; }
+        public ICommand DeleteProductCommand { get; }
+        public ICommand RefreshCommand { get; }
 
-        // Load data from ProductService
-        private void LoadProducts()
+
+        public ProductVM()
         {
-            try
-            {
-                var products = _productService.GetPagedProducts(FilterText, CurrentPage, PageSize);
-                TotalCount = _productService.GetTotalCount(FilterText);
+           _unitOfWork= new UnitOfWork(new RetailDbContext());
+            ShowWindowCommand = new RelayCommand(_ => ShowAddProductWindow());
+            AddProductCommand = new RelayCommand(async param => await AddProductAsync(param));
+            EditProductCommand = new RelayCommand(async _ => await EditProductAsync(), _ => SelectedProduct != null);
+            DeleteProductCommand = new RelayCommand(async _ => await DeleteProductAsync(), _ => SelectedProduct != null);
+            RefreshCommand = new RelayCommand(async _ => await LoadPagedProductsAsync());
 
-                MyProducts.Clear();
-                foreach (var product in products)
-                    MyProducts.Add(product);
-            }
-            catch (Exception ex)
+            Pagination.PropertyChanged += async (s, e) =>
             {
-                MessageBox.Show($"Error loading products: {ex.Message}");
-            }
+                if (e.PropertyName == nameof(Pagination.CurrentPage) || e.PropertyName == nameof(Pagination.PageSize))
+                    await LoadPagedProductsAsync();
+            };
+
+            _ = LoadPagedProductsAsync();
         }
 
-        private void GoToFirstPage() => CurrentPage = 1;
-        private void GoToNextPage() { if (CurrentPage < TotalPages) CurrentPage++; }
-        private void GoToPrevPage() { if (CurrentPage > 1) CurrentPage--; }
-        private void GoToLastPage() => CurrentPage = TotalPages;
+       
 
         private void ShowAddProductWindow()
         {
-            var addWindow = new AddProduct
+            try
             {
-                DataContext = this
-            };
-            addWindow.ShowDialog();
+                var addWindow = new AddProduct { DataContext = this };
+                addWindow.ShowDialog();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error opening Add Product window: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void AddProduct(object parameter)
+        private async Task LoadPagedProductsAsync()
         {
             try
             {
-                var product = new Product
+                var (pagedProducts, toalCount) = await _unitOfWork.Products.GetPagedProductsAsync(
+                    Pagination.CurrentPage,
+                    Pagination.PageSize,
+                    FilterText
+                    );
+
+                Products = new ObservableCollection<Product>(pagedProducts);
+                Pagination.TotalCount = toalCount;
+                OnPropertyChanged(nameof(Products));
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error loading products: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        private async Task AddProductAsync(object parameter)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(ProductName))
+                {
+                    MessageBox.Show("Product Name is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                var newProduct = new Product
                 {
                     ProductName = ProductName,
-                    Category = Category,
-                    Price = Price,
-                    Description = Description
+                    Description = ProductDescription,
+                    Category= ProductCategory,
+                    Price=ProductPrice
                 };
 
-                _productService.Add(product);
+                await _unitOfWork.Products.AddAsync(newProduct);
+                _unitOfWork.Complete();
 
-                // Clear form fields
-                ProductName = string.Empty;
-                Category = string.Empty;
-                Price = 0;
-                Description = string.Empty;
+                ClearInputs();
+                await LoadPagedProductsAsync();
 
-                OnPropertyChanged(nameof(ProductName));
-                OnPropertyChanged(nameof(Category));
-                OnPropertyChanged(nameof(Price));
+                MessageBox.Show("Product added successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                OnPropertyChanged(nameof(Description));
-
-                LoadProducts();
-
-                MessageBox.Show("Product added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            catch (Exception e)
+            catch(Exception ex)
             {
-                MessageBox.Show($"Failed to add product: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error adding product: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void UpdateProduct(object parameter)
+      
+        private async Task EditProductAsync()
         {
-            if (parameter is not Product product)
-                return;
-
-            var editVM = new ProductVM
+           if(SelectedProduct == null)
             {
-                Id = product.Id,
-                ProductName = product.ProductName,
-                Category = product.Category,
-                Price = product.Price,
-                Description = product.Description
-            };
-
-            var editWindow = new EditProduct
-            {
-                DataContext = editVM
-            };
-
-            if (editWindow.ShowDialog() == true)
-            {
-                product.Id = editVM.Id;
-                product.ProductName = editVM.ProductName;
-                product.Category = editVM.Category;
-                product.Price = editVM.Price;
-                product.Description = editVM.Description;
-
-                try
-                {
-                    _productService.Update(product);
-                    MessageBox.Show("Product updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LoadProducts();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error updating product: {ex.Message}");
-                }
-            }
-        }
-
-        private void DeleteProduct(object parameter)
-        {
-            if (parameter is Product product)
-            {
-                var result = MessageBox.Show($"Are you sure to delete {product.ProductName}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        _productService.Delete(product.Id);
-                        LoadProducts();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error deleting product: {ex.Message}");
-                    }
-                }
-            }
-        }
-
-        private void DeleteSelectedProducts()
-        {
-            var selectedProducts = MyProducts.Where(p => p.IsSelected).ToList();
-            if (!selectedProducts.Any())
-            {
-                MessageBox.Show("No products selected.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please select a product to edit.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var result = MessageBox.Show($"Are you sure to delete {selectedProducts.Count} selected products?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes)
+            try
             {
-                try
-                {
-                    foreach (var p in selectedProducts)
-                        _productService.Delete(p.Id);
+                SelectedProduct.ProductName= ProductName ?? SelectedProduct.ProductName;
+                SelectedProduct.Description = ProductDescription ?? SelectedProduct.Description;
+                SelectedProduct.Category = ProductCategory ?? SelectedProduct.Category;
+                SelectedProduct.Price = ProductPrice;
 
-                    LoadProducts();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error deleting products: {ex.Message}");
-                }
+                await _unitOfWork.Products.UpdateAsync(SelectedProduct);
+                _unitOfWork.Complete();
+
+                await LoadPagedProductsAsync();
+                MessageBox.Show("Product updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Error updating product: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        public void SelectAllRows(bool select)
+       
+        private async Task DeleteProductAsync()
         {
-            foreach (var p in MyProducts)
-                p.IsSelected = select;
+            if (SelectedProduct == null)
+            {
+                MessageBox.Show("Please select a product to delete.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var confirm = MessageBox.Show($"Are you sure you want to delete '{SelectedProduct.ProductName}'?",
+                "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if(confirm== MessageBoxResult.Yes)
+            {
+                try
+                {
+                    await _unitOfWork.Products.DeleteAsync(SelectedProduct);
+                    _unitOfWork.Complete();
+                    await LoadPagedProductsAsync();
+                    MessageBox.Show("Product deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show($"Error deleting product: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+           
         }
 
 
-
+        private void ClearInputs()
+        {
+            ProductName = string.Empty;
+            ProductDescription=string.Empty;
+            ProductCategory = string.Empty;
+            ProductPrice = 0;
+        }
 
 
     }
