@@ -154,24 +154,27 @@ namespace RetailManagementSystem.ViewModels
                 MessageBoxImage.Warning
                 );
 
-            if(result == MessageBoxResult.Yes) return;
-
-            try
+            if(result == MessageBoxResult.Yes)
             {
-                foreach(var c in selectedCustomers)
+                try
                 {
-                    await _unitOfWork.Customers.DeleteAsync(c);
+                    foreach (var c in selectedCustomers)
+                    {
+                        await _unitOfWork.Customers.DeleteAsync(c);
+                    }
+
+                    _unitOfWork.Complete();
+                    await LoadPagedCustomersAsync();
+                    MessageBox.Show("Customers deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
                 }
-
-                _unitOfWork.Complete();
-                await LoadPagedCustomersAsync();
-
-
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error deleting customers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            catch(Exception ex)
-            {
-                MessageBox.Show($"Error deleting customers: {ex.Message}","Error",MessageBoxButton.OK,MessageBoxImage.Error);
-            }
+
+           
         }
 
         private void ShowAddCustomerWindow()

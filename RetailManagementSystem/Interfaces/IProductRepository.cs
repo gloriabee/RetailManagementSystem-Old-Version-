@@ -12,6 +12,7 @@ namespace RetailManagementSystem.Interfaces
     {
         Task<int> GetProductsCountAsync();
         Task<List<int>> GetProductIdsAsync();
+        List<string> GetAllCategories();
         Task<string?> GetProductNameByIdAsync(int productId);
         Task<decimal> GetProductPriceByIdAsync(int productId);
         Task<List<TopCategoryDto>> GetTopCategoriesAsync(int count);

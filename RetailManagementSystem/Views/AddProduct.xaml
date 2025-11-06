@@ -53,9 +53,12 @@
         <!-- Category -->
         <Label Grid.Row="2" Grid.Column="0" Content="Category:" 
        VerticalAlignment="Center" Margin="0,5" FontWeight="Bold"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Height="30" 
+        <!--<TextBox Grid.Row="2" Grid.Column="1" Height="30" 
          Text="{Binding ProductCategory, UpdateSourceTrigger=PropertyChanged}" Margin="0,5"
-         Background="White" BorderThickness="1" BorderBrush="#E0E0E0"/>
+         Background="White" BorderThickness="1" BorderBrush="#E0E0E0"/>-->
+        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Categories}"
+         SelectedValue="{Binding SelectedCategoryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        />
 
         <!-- Price -->
         <Label Grid.Row="3" Grid.Column="0" Content="Price:" 
@@ -80,10 +83,6 @@
 
 
         </StackPanel>
-
-
-
-
 
     </Grid>
 </Window>

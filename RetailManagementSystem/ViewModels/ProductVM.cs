@@ -18,6 +18,7 @@ namespace RetailManagementSystem.ViewModels
     public class ProductVM : ViewModelBase
     {
         private readonly UnitOfWork _unitOfWork;
+        
         public PaginationVM Pagination { get; set; } = new PaginationVM();
 
         private string _filterText;
@@ -65,8 +66,18 @@ namespace RetailManagementSystem.ViewModels
             get => _productPrice;
             set { _productPrice = value; OnPropertyChanged(nameof(ProductPrice)); }
         }
-
+        private string _selectedCategoryName;
+        public string SelectedCategoryName
+        {
+            get => _selectedCategoryName;
+            set
+            {
+                _selectedCategoryName = value;
+                OnPropertyChanged(nameof(SelectedCategoryName));
+            }
+        }
         public Product SelectedProduct { get; set; }
+        public ObservableCollection<string> Categories { get; set; } 
 
         // Commands 
         public ICommand ShowWindowCommand { get; }
@@ -79,6 +90,7 @@ namespace RetailManagementSystem.ViewModels
         public ProductVM()
         {
            _unitOfWork= new UnitOfWork(new RetailDbContext());
+            Categories = new ObservableCollection<string>(_unitOfWork.Products.GetAllCategories());
             ShowWindowCommand = new RelayCommand(_ => ShowAddProductWindow());
             AddProductCommand = new RelayCommand(async param => await AddProductAsync(param));
             EditProductCommand = new RelayCommand(async _ => await EditProductAsync(), _ => SelectedProduct != null);
@@ -143,7 +155,7 @@ namespace RetailManagementSystem.ViewModels
                 {
                     ProductName = ProductName,
                     Description = ProductDescription,
-                    Category= ProductCategory,
+                    Category= SelectedCategoryName,
                     Price=ProductPrice
                 };
 
@@ -226,7 +238,7 @@ namespace RetailManagementSystem.ViewModels
         {
             ProductName = string.Empty;
             ProductDescription=string.Empty;
-            ProductCategory = string.Empty;
+            SelectedCategoryName = string.Empty;
             ProductPrice = 0;
         }
 

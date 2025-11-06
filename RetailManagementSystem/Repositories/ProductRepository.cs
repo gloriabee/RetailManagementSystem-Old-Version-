@@ -17,6 +17,15 @@ namespace RetailManagementSystem.Repositories
 
         }
 
+        public List<string> GetAllCategories()
+        {
+           var categories= _context.Products
+                .Select(p => p.Category)
+                .Distinct()
+                .ToList();
+            return categories;
+        }
+
         public async Task<(List<Product> products, int TotalCount)> GetPagedProductsAsync(int pageNumber, int pageSize, string? filter)
         {
             var products = _context.Products
